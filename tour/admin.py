@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Activity, Region, Tour
+from .models import Activity, Region, Tour, BookingEnquiry, SeasonalBanner
 
 
 
@@ -21,17 +21,47 @@ class RegionAdmin(admin.ModelAdmin):
 	prepopulated_fields = {"region_slug": ("region_title", )}
 
 
-
 class TourAdmin(admin.ModelAdmin):
-	list_display = ('tour_title', 'tour_slug', 'tour_is_active', 'tour_is_featured', 'tour_added_by')
-	list_editable = ('tour_slug', 'tour_is_active', 'tour_is_featured')
+	list_display = ('tour_title', 'starting_price', 'tour_slug', 'tour_is_active', 'tour_is_featured', 'tour_added_by')
+	list_editable = ('starting_price', 'tour_slug', 'tour_is_active', 'tour_is_featured')
 	list_per_page = 10
 	list_filter = ('tour_created_at', 'tour_is_active')
-	search_fields = ('tour_title', 'tour_description')
+	search_fields = ('tour_title', 'starting_price', 'tour_description')
 	prepopulated_fields = {"tour_slug": ("tour_title", )}
+
+
+@admin.register(BookingEnquiry)
+class BookingEnquiryAdmin(admin.ModelAdmin):
+	list_display  = ('full_name', 'phone_number', 'pickup_location', 'destination', 'car_requirement', 'created_at', 'is_resolved')
+	list_filter   = ('is_resolved', 'created_at', 'car_requirement')
+	list_editable = ('is_resolved',)
+	search_fields = ('full_name', 'phone_number', 'pickup_location', 'destination', 'message')
+	date_hierarchy = 'created_at'
+	list_per_page = 25
+	readonly_fields = ('created_at',)
+	fieldsets = (
+		('Customer Details', {
+			'fields': ('full_name', 'phone_number')
+		}),
+		('Trip Details', {
+			'fields': ('pickup_location', 'destination', 'car_requirement', 'message')
+		}),
+		('Status', {
+			'fields': ('is_resolved', 'created_at')
+		}),
+	)
 
 
 # Register your models here.
 admin.site.register(Activity, ActivityAdmin)
 admin.site.register(Region, RegionAdmin)
 admin.site.register(Tour, TourAdmin)
+
+
+@admin.register(SeasonalBanner)
+class SeasonalBannerAdmin(admin.ModelAdmin):
+	list_display = ('title', 'badge_text', 'is_active', 'created_at')
+	list_editable = ('is_active',)
+	list_filter = ('is_active', 'created_at')
+	search_fields = ('title', 'subtitle', 'badge_text')
+	list_per_page = 15

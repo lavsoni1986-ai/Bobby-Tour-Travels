@@ -32,6 +32,11 @@ class Category(models.Model):
 	seo_category_description = models.TextField(blank=True, null=True, verbose_name='SEO Category Description (160 Characters Long)')
 
 
+	class Meta:
+		verbose_name = "Category"
+		verbose_name_plural = "Categories"
+		ordering = ['category_title']
+
 	def __str__(self):
 		return self.category_title
 
@@ -72,5 +77,7 @@ class Blog(models.Model):
 
 
 	class Meta:
+		verbose_name = "Travel Blog & Guide"
+		verbose_name_plural = "Travel Blogs & Guides"
 		ordering = ['-blog_created_at']
 

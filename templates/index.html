@@ -1,4 +1,3 @@
-
 {% extends 'base.html' %}
 {% load static %}
 
@@ -6,7 +5,6 @@
 		<title>{{ this_app.app_name }} - {{ this_app.app_title}}</title>
 		<meta name="description" content="{{ this_app.app_description }}" />
 		<meta name="keywords" content="{{ this_app.app_keywords }}" />
-
 
 		<!-- Facebook and Twitter integration -->
 		<meta property="og:title" content="{{ this_app.app_name }} - {{ this_app.app_title}}"/>
@@ -21,282 +19,947 @@
 		<meta name="twitter:card" content="summary_large_image" />
 	{% endblock meta_content %}
 
-
 	{% block content %}
-
-		{% if featured_tours %}
-
-			{% for tour in featured_tours  %}
-			<div class="fh5co-hero">
-				<div class="fh5co-overlay"></div>
-				{% if tour.tour_image %}
-					<div class="fh5co-cover" data-stellar-background-ratio="0.5" style="background-image: url('{{ tour.tour_image.url }}');">
-				{% else %}
-					<div class="fh5co-cover" data-stellar-background-ratio="0.5" style="background-image: url({% static 'images/no-image.jpg' %});">
-				{% endif %}
-					<div class="desc">
-						<div class="container">
-							<div class="row">
-								<div class="desc2 animate-box">
-									<div class="col-sm-7 col-sm-push-1 col-md-7 col-md-push-1">
-										<p style="color:white;">#1 Most Popular Tour Now in Nepal</p>
-										<h2>{{ tour.tour_title }}</h2>
-										<p>{{ tour.tour_description|safe|slice:":200" }}</p>
-										<p><a class="btn btn-primary btn-lg" href="{% url 'tour:tour-detail' tour.tour_slug %}">Explore Now</a></p> 
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-
+	
+	<!-- 0. ADMIN-CONTROLLED SEASONAL PROMO BANNER -->
+	{% if seasonal_banner %}
+	<aside aria-label="Seasonal Announcement" class="relative z-40 bg-gradient-to-r from-red-700 via-rose-600 to-red-800 text-white py-3.5 px-4 shadow-md border-b border-red-500/40">
+		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-3 text-center md:text-left">
+			
+			<!-- Left: Animated Alert Dot + Content -->
+			<div class="flex flex-wrap items-center justify-center md:justify-start gap-2.5">
+				<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black bg-white/20 backdrop-blur-md text-white border border-white/30 uppercase tracking-wider shadow-xs">
+					<span class="w-2 h-2 rounded-full bg-amber-300 animate-ping"></span>
+					{{ seasonal_banner.badge_text }}
+				</span>
+				<span class="font-bold text-sm sm:text-base text-white tracking-wide">
+					{{ seasonal_banner.title }}
+				</span>
+				<span class="hidden lg:inline text-red-200 text-xs sm:text-sm">
+					&bull; {{ seasonal_banner.subtitle }}
+				</span>
 			</div>
-			{% endfor %}
 
-		{% else %}
-
-		<div class="fh5co-hero">
-			<div class="fh5co-overlay"></div>
-			<div class="fh5co-cover" data-stellar-background-ratio="0.5" style="background-image: url({% static 'images/no-image.jpg' %});">
-				<div class="desc">
-					<div class="container">
-						<div class="row">
-							<div class="desc2 animate-box">
-								<div class="col-sm-7 col-sm-push-1 col-md-7 col-md-push-1">
-									
-									<h2>Explore the Himalayas Like You've Never Seen Before</h2>
-									<p>Here's the best tours that you'll love and have memory for life.</p>
-
-									<p><a class="btn btn-primary btn-lg" href="#home_tours">Explore Tours</a></p> 
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
+			<!-- Right: Action Button -->
+			<div class="flex items-center gap-3 flex-shrink-0">
+				<a href="{{ seasonal_banner.button_url }}" target="_blank" class="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white text-red-700 hover:bg-slate-950 hover:text-white font-extrabold text-xs sm:text-sm shadow-md transition-all duration-200 transform hover:scale-105">
+					<i class="fab fa-whatsapp text-emerald-600 text-base"></i>
+					<span>{{ seasonal_banner.button_text }}</span>
+					<i class="fas fa-arrow-right text-[10px]"></i>
+				</a>
 			</div>
 
 		</div>
-		{% endif %}
-		
-		<!-- Regions Starts Here -->
-		<span id="home_tours"></span>
-		{% if regions %}
-			<div id="fh5co-tours" class="fh5co-section-gray">
-				<div class="container">
-					<div class="row">
-						<div class="col-md-8 col-md-offset-2 text-center heading-section animate-box">
-							<h3>Best Regions</h3>
-							<p>Best Regions to find adventure activities like Trekking, Mountain Climbing, Rafting, Canyoning and Many More.</p>
-						</div>
-					</div>
-					<div class="row">
+	</aside>
+	{% endif %}
 
-						{% for region in regions %}
-							<div class="col-md-4 col-sm-6 fh5co-tours animate-box" data-animate-effect="fadeIn">
-								<div href="#">
-									{% if region.region_image %}
-									<img src="{{ region.region_image.url }}" alt="{{ region.region_title }}" class="img-responsive" style="height:320px; width:100%;">
-									{% else %}
-									<img src="{% static 'images/no-image.jpg' %}" alt="Travel Nepal" class="img-responsive" style="height:320px; width:100%;">
-									{% endif %}
-
-									<div class="desc">
-										<span></span>
-										<h3>{{ region.region_title }}</h3>
-										<br>
-										<a class="btn btn-primary btn-outline" href="{% url 'tour:region-detail' region.region_slug %}">Explore Tours <i class="icon-arrow-right22"></i></a>
-									</div>
-								</div>
-							</div>
-						{% endfor %}
-
-						<div class="col-md-12 text-center animate-box">
-							<p><a class="btn btn-primary btn-outline btn-lg" href="{% url 'tour:all-regions' %}">See All Regions <i class="icon-arrow-right22"></i></a></p>
-						</div>
-					</div>
-				</div>
-			</div>
-		{% endif %}
-		<!-- Regions Ends Here -->
-
-		<!-- Activities Starts Here -->
-		{% if activities %}
-			<div id="fh5co-features">
-				<div class="container">
-					<div class="row">
-
-						{% for activity in activities %}
-						<div class="col-md-4 animate-box">
-							<div class="feature-left">
-								<span class="icon">
-									<a href="{% url 'tour:activity-detail' activity.activity_slug %}">
-									{% if activity.activity_icon %}
-										<img src="{{  activity.activity_icon }}" alt="{{ activity.activity_title }}" class="img-responsive">
-									{% else %}
-										<i class="icon-hotairballoon"></i>
-									{% endif %}
-									</a>
-								</span>
-								<div class="feature-copy">
-									<h3>{{ activity.activity_title }}</h3>
-									<p>{{ activity.activity_description|safe|slice:":70" }} ...</p>
-									<p><a href="{% url 'tour:activity-detail' activity.activity_slug %}">Learn More</a></p>
-								</div>
-							</div>
-						</div>
-						{% endfor %}
-
-					</div>
-				</div>
-			</div>
-		{% endif %}
-		<!-- Activities Ends Here -->
-
-		
-		<!-- Tours Starts Here -->
-		{% if tours %}
-			<div id="fh5co-destination">
-				<div class="tour-fluid">
-					<div class="row">
-						<div class="col-md-12">
-							<ul id="fh5co-destination-list" class="animate-box">
-
-								{% for tour in tours %}
-
-									{% if forloop.counter == 6 %}
-										<li class="one-half text-center">
-											<div class="title-bg">
-												<div class="case-studies-summary">
-													<h2>Most Popular Destinations</h2>
-													<span><a href="{% url 'tour:all-tours' %}">View All Destinations</a></span>
-												</div>
-											</div>
-										</li>
-									{% endif %}
-
-									{% if tour.tour_image %}
-										<li class="one-forth text-center" style="background-image: url({{ tour.tour_image.url  }}); ">
-									{% else %}
-										<li class="one-forth text-center" style="background-image: url({% static 'images/no-image.jpg' %}); ">
-									{% endif %}
-									
-										<a href="{% url 'tour:tour-detail' tour.tour_slug %}">
-											<div class="case-studies-summary">
-												<h2>{{ tour.tour_title }}</h2>
-											</div>
-										</a>
-									</li>
-									
-								{% endfor %}
-
-								
-							</ul>		
-						</div>
-					</div>
-				</div>
-			</div>
-		{% endif %}
-		<!-- Tours Ends Here -->
-
-
-		<!-- Blogs Starts Here -->
-		{% if blogs %}
-		<div id="fh5co-blog-section" class="fh5co-section-gray">
-			<div class="container">
-				<div class="row">
-					<div class="col-md-8 col-md-offset-2 text-center heading-section animate-box">
-						<h3>Recent From Blog</h3>
-						<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Velit est facilis maiores, perspiciatis accusamus asperiores sint consequuntur debitis.</p>
-					</div>
-				</div>
-			</div>
-			<div class="container">
-				<div class="row row-bottom-padded-md">
-
-					{% for blog in blogs %}
-					<div class="col-lg-4 col-md-4 col-sm-6">
-						<div class="fh5co-blog animate-box">
-
-							{% if blog.blog_image %}
-								<a href="{% url 'blog:blog-detail' blog.blog_slug %}"><img class="img-responsive" src="{{ blog.blog_image.url }}" alt="{{ blog.blog_title }}" style="height:200px; width:100%;"></a>
-							{% else %}
-								<a href="{% url 'blog:blog-detail' blog.blog_slug %}"><img class="img-responsive" src="{% static 'images/no-image.jpg' %}" alt="{{ blog.blog_title }}" style="height:200px; width:100%;"></a>
-							{% endif %}
-
-							<div class="blog-text">
-								<div class="prod-title">
-									<h3><a href="{% url 'blog:blog-detail' blog.blog_slug %}">{{ blog.blog_title }}</a></h3>
-									<span class="posted_by">{{ blog.blog_created_at }}</span>
-									{% comment %} <span class="comment"><a href="">21<i class="icon-bubble2"></i></a></span> {% endcomment %}
-									<div>{{ blog.blog_description|safe|slice:":100" }} ...</div>
-									<p><a href="{% url 'blog:blog-detail' blog.blog_slug %}">Read More...</a></p>
-								</div>
-							</div> 
-						</div>
-					</div>
-					{% endfor %}
-					<div class="clearfix visible-md-block"></div>
-				</div>
-
-				<div class="col-md-12 text-center animate-box">
-					<p><a class="btn btn-primary btn-outline btn-lg" href="{% url 'blog:all-blogs' %}">See All Blogs <i class="icon-arrow-right22"></i></a></p>
-				</div>
-
-			</div>
-		</div>
-		{% endif %}
-		<!-- Blog Ends Here -->
-
-		<div class="subscribe">
-			<div class="container">
-				<h2 class="text-center">Subscribe To Our Newsletter</h2>
-				<form method="POST" action=".">
-					{% csrf_token %}
-				  <div class="row">
-				    <div class="col-md-9">
-				      <input type="email" name="subscriber_email" class="form-control form-control-lg" placeholder="Your Email" required="True">
-				    </div>
-				    <div class="col-md-3">
-				      <button class="form-control btn btn-primary btn-lg">SUBSCRIBE</button>
-				    </div>
-				  </div>
-				</form>
-			</div>
+	<!-- 1. HERO SECTION: Luxury Automotive Platform Experience -->
+	<section class="relative min-h-[640px] lg:min-h-[720px] flex items-center bg-slate-950 overflow-hidden">
+		<!-- Background Image Layer with Luxury Gradient Overlays -->
+		<div class="absolute inset-0 z-0">
+			{% if featured_tours %}
+				{% for tour in featured_tours %}
+					{% if tour.tour_image %}
+						<img src="{{ tour.tour_image.url }}" alt="Bobby Tours &amp; Travels Shahdol" class="w-full h-full object-cover object-center scale-105 transition-transform duration-[10000ms] ease-out">
+					{% else %}
+						<img src="{% static 'images/hero_banner.jpg' %}" alt="Bobby Tours &amp; Travels Shahdol" class="w-full h-full object-cover object-center scale-105 transition-transform duration-[10000ms] ease-out">
+					{% endif %}
+				{% endfor %}
+			{% else %}
+				<img src="{% static 'images/hero_banner.jpg' %}" alt="Bobby Tours &amp; Travels Shahdol" class="w-full h-full object-cover object-center scale-105 transition-transform duration-[10000ms] ease-out">
+			{% endif %}
+			
+			<!-- Multilayer Luxury Gradient Overlays -->
+			<div class="absolute inset-0 bg-gradient-to-r from-slate-950/95 via-slate-950/80 to-slate-900/40"></div>
+			<div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-slate-950/40"></div>
 		</div>
 
-
-		<!-- fh5co-testimonials-section -->
-		 {% if testimonials %}
-		<div id="fh5co-testimonial">
-		<div class="container">
-			<div class="row animate-box">
-				<div class="col-md-8 col-md-offset-2 text-center fh5co-heading">
-					<h2>Happy Clients</h2>
-				</div>
-			</div>
-			<div class="row">
-
-				{% for testimonial in testimonials %}
-				<div class="col-md-4">
-					<div class="box-testimony animate-box">
-						<blockquote>
-							<span class="quote"><span><i class="icon-quotes-right"></i></span></span>
-							<p>&ldquo;{{ testimonial.testimonial }}&rdquo;</p>
-						</blockquote>
-						<p class="author">{{ testimonial.customer_name }}, <span style="color: #98D7BE;">{{ testimonial.customer_company}}</span> <span class="subtext">{{ testimonial.customer_job_title }}</span></p>
-					</div>
+		<!-- Hero Content Container -->
+		<div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24 w-full">
+			<div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+				
+				<!-- Left 7 Columns: Headline, Subtitle, CTAs & Badges -->
+				<div class="lg:col-span-7 text-left">
 					
+					<!-- Floating Glass Pill Badge -->
+					<div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-amber-400/40 text-amber-300 text-xs sm:text-sm font-semibold tracking-wide uppercase shadow-lg shadow-black/20 mb-6">
+						<span class="text-amber-400 text-base leading-none">⭐</span>
+						<span>Shahdol's #1 Luxury Fleet Since 1980</span>
+						<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+					</div>
+
+					<!-- Main Headline -->
+					<h1 class="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-black text-white tracking-tight leading-[1.15] mb-6">
+						Premier Luxury Cabs &amp; <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-rose-400 to-amber-300">Outstation Rentals</span> in Shahdol
+					</h1>
+
+					<!-- Subtitle Description -->
+					<p class="text-base sm:text-lg text-slate-300 font-normal leading-relaxed mb-8 max-w-2xl">
+						Travel in unmatched comfort with brand new <strong>Innova Crysta, Scorpio-N, Maruti Ertiga &amp; Swift Dzire</strong>. Verified professional chauffeurs for Bandhavgarh Safaris, holy Amarkantak, Jabalpur &amp; interstate travel.
+					</p>
+
+					<!-- High-Converting CTA Buttons -->
+					<div class="flex flex-wrap items-center gap-3.5 mb-8">
+						<!-- Bold Crimson Red CTA -->
+						<a href="tel:+919424489377" class="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-2xl text-sm sm:text-base font-bold text-white bg-red-600 hover:bg-red-500 shadow-xl shadow-red-600/30 hover:shadow-red-600/50 transition-all duration-300 transform hover:-translate-y-0.5">
+							<i class="fas fa-phone-alt text-base"></i>
+							<span>Call: 9424489377</span>
+						</a>
+
+						<!-- Sleek Glass Button -->
+						<a href="#fleet" class="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl text-sm sm:text-base font-bold text-white bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 transition-all duration-300 transform hover:-translate-y-0.5">
+							<span>Explore Fleet &amp; Tariff</span>
+							<i class="fas fa-car-side text-sm"></i>
+						</a>
+
+						<!-- Glowing WhatsApp Button -->
+						<a href="https://wa.me/919424489377?text=Hello%20Bobby%20Tour%20and%20Travels,%20I%20want%20to%20book%20a%20car." target="_blank" class="whatsapp-glow inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl text-sm sm:text-base font-bold text-white bg-emerald-600 hover:bg-emerald-500 shadow-lg shadow-emerald-600/30 hover:shadow-emerald-600/50 transition-all duration-300 transform hover:-translate-y-0.5">
+							<i class="fab fa-whatsapp text-lg"></i>
+							<span>WhatsApp Booking</span>
+						</a>
+					</div>
+
+					<!-- Quick Trust Badges Strip -->
+					<div class="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6 border-t border-white/10 text-slate-300 text-xs sm:text-sm">
+						<div class="flex items-center gap-2">
+							<i class="fas fa-shield-alt text-red-400 text-base"></i>
+							<span class="font-semibold text-white">Brand New AC Cars</span>
+						</div>
+						<div class="flex items-center gap-2">
+							<i class="far fa-clock text-amber-400 text-base"></i>
+							<span class="font-semibold text-white">24x7 Instant Pickup</span>
+						</div>
+						<div class="flex items-center gap-2">
+							<i class="fas fa-user-check text-emerald-400 text-base"></i>
+							<span class="font-semibold text-white">Verified Drivers</span>
+						</div>
+						<div class="flex items-center gap-2">
+							<i class="fas fa-tag text-rose-400 text-base"></i>
+							<span class="font-semibold text-white">Starting ₹12/km</span>
+						</div>
+					</div>
+
+				</div>
+
+				<!-- Right 5 Columns: Instant Cab Fare Estimator Widget -->
+				<div class="lg:col-span-5">
+					<div class="bg-slate-900/90 backdrop-blur-xl border border-white/15 rounded-3xl p-6 sm:p-8 shadow-2xl text-white relative overflow-hidden">
+						<!-- Glow backdrop -->
+						<div class="absolute -right-10 -top-10 w-40 h-40 bg-red-600/20 rounded-full blur-3xl pointer-events-none"></div>
+
+						<div class="flex items-center justify-between pb-4 mb-5 border-b border-white/10">
+							<div>
+								<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-red-600/30 text-red-300 border border-red-500/40 uppercase tracking-wider">
+									⚡ Instant Quote
+								</span>
+								<h3 class="text-xl font-bold font-heading text-white mt-1">Cab Fare &amp; Route Estimator</h3>
+							</div>
+							<div class="w-10 h-10 rounded-2xl bg-white/10 flex items-center justify-center text-red-400 text-lg">
+								<i class="fas fa-calculator"></i>
+							</div>
+						</div>
+
+						<!-- Form Controls -->
+						<div class="space-y-4">
+							<!-- Route Select -->
+							<div>
+								<label for="fare-route" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+									<i class="fas fa-map-marker-alt text-red-400 mr-1"></i> Select Route (From Shahdol)
+								</label>
+								<select id="fare-route" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-3 text-sm sm:text-base font-medium text-white focus:outline-none focus:border-red-500 transition">
+									<option value="Bandhavgarh Safari" data-km="95" selected>Shahdol ➔ Bandhavgarh Safari (95 km)</option>
+									<option value="Amarkantak Darshan" data-km="115">Shahdol ➔ Amarkantak Darshan (115 km)</option>
+									<option value="Jabalpur / Airport" data-km="195">Shahdol ➔ Jabalpur / Airport (195 km)</option>
+									<option value="Maihar Sharda Devi" data-km="165">Shahdol ➔ Maihar Sharda Devi (165 km)</option>
+									<option value="Rewa / Bilaspur" data-km="175">Shahdol ➔ Rewa / Bilaspur (175 km)</option>
+									<option value="Bhopal / Indore Outstation" data-km="480">Shahdol ➔ Bhopal / Indore (Outstation)</option>
+								</select>
+							</div>
+
+							<!-- Vehicle Select -->
+							<div>
+								<label for="fare-vehicle" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+									<i class="fas fa-car-side text-red-400 mr-1"></i> Select Vehicle
+								</label>
+								<select id="fare-vehicle" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-3 text-sm sm:text-base font-medium text-white focus:outline-none focus:border-red-500 transition">
+									<option value="Maruti Swift Dzire" data-rate="12" data-seats="4+1" selected>Maruti Swift Dzire (4+1 AC Sedan) — ₹12/km</option>
+									<option value="Maruti Suzuki Ertiga" data-rate="15" data-seats="6+1">Maruti Suzuki Ertiga (6+1 AC MUV) — ₹15/km</option>
+									<option value="Mahindra Scorpio" data-rate="18" data-seats="7">Mahindra Scorpio (7 Seater SUV) — ₹18/km</option>
+									<option value="Toyota Innova Crysta" data-rate="20" data-seats="7+1">Toyota Innova Crysta (7+1 Luxury SUV) — ₹20/km</option>
+								</select>
+							</div>
+
+							<!-- Trip Type Toggle -->
+							<div>
+								<label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+									<i class="fas fa-exchange-alt text-red-400 mr-1"></i> Trip Type
+								</label>
+								<div class="grid grid-cols-2 gap-2 bg-slate-950 p-1 rounded-xl border border-slate-800">
+									<button type="button" id="type-oneway" class="py-2.5 px-3 rounded-lg text-xs sm:text-sm font-bold transition bg-red-600 text-white shadow">
+										One-Way Drop
+									</button>
+									<button type="button" id="type-roundtrip" class="py-2.5 px-3 rounded-lg text-xs sm:text-sm font-bold transition text-slate-400 hover:text-white">
+										Round Trip
+									</button>
+								</div>
+							</div>
+
+							<!-- Fare Display Card -->
+							<div class="bg-slate-950/80 rounded-2xl p-4 border border-slate-800 mt-4">
+								<div class="flex items-center justify-between text-xs text-slate-400 mb-1">
+									<span id="fare-dist-label">Estimated Distance: <strong id="fare-km" class="text-white">95 km</strong></span>
+									<span id="fare-rate-label">Rate: <strong id="fare-rate" class="text-white">₹12/km</strong></span>
+								</div>
+								<div class="flex items-baseline justify-between pt-2 border-t border-slate-800/80">
+									<span class="text-xs sm:text-sm font-semibold text-slate-300">Estimated Fare:</span>
+									<span id="fare-total" class="text-2xl sm:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-rose-400">
+										₹1,140 - ₹1,400
+									</span>
+								</div>
+								<p class="text-[11px] text-slate-400 mt-1 leading-tight">
+									*Approximate fuel &amp; cab fare. Excludes interstate toll/parking. 0 cancellation fee on prior notice.
+								</p>
+							</div>
+
+							<!-- WhatsApp CTA Button -->
+							<a id="fare-whatsapp-btn" href="https://wa.me/919424489377?text=Hello%20Bobby%20Tour%20and%20Travels,%20I%20want%20to%20book%20Maruti%20Swift%20Dzire%20for%20Shahdol%20to%20Bandhavgarh%20Safari%20(Estimated%20fare:%20₹1,140)." target="_blank" class="w-full py-4 px-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/30 transition transform hover:-translate-y-0.5 whatsapp-glow mt-4">
+								<i class="fab fa-whatsapp text-xl"></i>
+								<span>Lock This Price on WhatsApp</span>
+							</a>
+
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</section>
+
+	<!-- 1.5 DEDICATED FLEET & TARIFF SHOWCASE -->
+	<section id="fleet" class="py-20 bg-white border-b border-slate-200/80">
+		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+			
+			<div class="flex flex-col md:flex-row md:items-end justify-between mb-14 gap-4">
+				<div>
+					<span class="inline-block text-xs font-bold tracking-widest text-red-600 uppercase mb-2">Our Vehicle Fleet</span>
+					<h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">Our Brand New Luxury Fleet &amp; Tariff</h2>
+					<p class="text-slate-600 text-base sm:text-lg mt-2 max-w-2xl">
+						All vehicles are brand new, GPS-enabled, commercial registered with 100% verified and experienced local drivers.
+					</p>
+				</div>
+				<div class="flex items-center gap-3 self-start md:self-auto">
+					<span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+						<i class="fas fa-check-circle"></i> Clean &amp; Sanitized Daily
+					</span>
+				</div>
+			</div>
+
+			<!-- 4-Column Fleet Grid -->
+			<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+				
+				<!-- Car 1: Swift Dzire -->
+				<div class="group bg-slate-50 rounded-3xl p-7 border border-slate-200/80 hover:bg-slate-950 hover:border-slate-800 transition-all duration-300 shadow-sm hover:shadow-2xl flex flex-col justify-between transform hover:-translate-y-1.5">
+					<div>
+						<div class="flex items-center justify-between mb-4">
+							<span class="px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700 group-hover:bg-red-600 group-hover:text-white transition">
+								Executive Sedan
+							</span>
+							<span class="text-xs font-bold text-slate-500 group-hover:text-slate-400">1-4 Pax</span>
+						</div>
+
+						<div class="w-16 h-16 rounded-2xl bg-white group-hover:bg-slate-900 border border-slate-200 group-hover:border-slate-800 flex items-center justify-center text-red-600 text-3xl mb-5 shadow-sm transition">
+							<i class="fas fa-car-side"></i>
+						</div>
+
+						<h3 class="text-xl font-bold font-heading text-slate-900 group-hover:text-white mb-2 transition">
+							Maruti Swift Dzire
+						</h3>
+						<p class="text-[15px] text-slate-600 group-hover:text-slate-300 leading-relaxed mb-6 transition">
+							Smooth AC ride for small families, corporate visits, and Jabalpur airport drops.
+						</p>
+
+						<!-- Specs Grid -->
+						<div class="space-y-2 pb-6 border-b border-slate-200 group-hover:border-slate-800 text-xs sm:text-sm text-slate-700 group-hover:text-slate-300 transition">
+							<div class="flex items-center justify-between">
+								<span><i class="fas fa-users text-red-500 mr-2"></i> Seating</span>
+								<strong class="font-bold text-slate-900 group-hover:text-white">4 + 1 Chauffeur</strong>
+							</div>
+							<div class="flex items-center justify-between">
+								<span><i class="fas fa-suitcase text-amber-500 mr-2"></i> Luggage</span>
+								<strong class="font-bold text-slate-900 group-hover:text-white">2 Large Bags</strong>
+							</div>
+							<div class="flex items-center justify-between">
+								<span><i class="fas fa-snowflake text-blue-500 mr-2"></i> Climate</span>
+								<strong class="font-bold text-slate-900 group-hover:text-white">Powerful AC</strong>
+							</div>
+						</div>
+					</div>
+
+					<div class="pt-6">
+						<div class="flex items-baseline justify-between mb-4">
+							<span class="text-xs text-slate-500 group-hover:text-slate-400 uppercase font-semibold">Tariff</span>
+							<span class="text-2xl font-extrabold text-red-600 group-hover:text-amber-400 font-heading transition">₹12 <span class="text-xs font-normal text-slate-500 group-hover:text-slate-400">/ km</span></span>
+						</div>
+						<a href="https://wa.me/919424489377?text=Hello%20Bobby%20Tour%20and%20Travels,%20I%20want%20to%20book%20Maruti%20Swift%20Dzire." target="_blank" class="w-full py-3.5 px-4 rounded-xl bg-slate-900 group-hover:bg-emerald-600 text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2 transition shadow">
+							<i class="fab fa-whatsapp text-lg"></i>
+							<span>Book Dzire</span>
+						</a>
+					</div>
+				</div>
+
+				<!-- Car 2: Maruti Ertiga -->
+				<div class="group bg-slate-50 rounded-3xl p-7 border border-slate-200/80 hover:bg-slate-950 hover:border-slate-800 transition-all duration-300 shadow-sm hover:shadow-2xl flex flex-col justify-between transform hover:-translate-y-1.5">
+					<div>
+						<div class="flex items-center justify-between mb-4">
+							<span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 group-hover:bg-emerald-600 group-hover:text-white transition">
+								Family MUV
+							</span>
+							<span class="text-xs font-bold text-slate-500 group-hover:text-slate-400">Family Pick</span>
+						</div>
+
+						<div class="w-16 h-16 rounded-2xl bg-white group-hover:bg-slate-900 border border-slate-200 group-hover:border-slate-800 flex items-center justify-center text-emerald-600 text-3xl mb-5 shadow-sm transition">
+							<i class="fas fa-shuttle-van"></i>
+						</div>
+
+						<h3 class="text-xl font-bold font-heading text-slate-900 group-hover:text-white mb-2 transition">
+							Maruti Suzuki Ertiga
+						</h3>
+						<p class="text-[15px] text-slate-600 group-hover:text-slate-300 leading-relaxed mb-6 transition">
+							Spacious 7-seater MUV, ideal for Amarkantak pilgrimage and family sightseeing.
+						</p>
+
+						<!-- Specs Grid -->
+						<div class="space-y-2 pb-6 border-b border-slate-200 group-hover:border-slate-800 text-xs sm:text-sm text-slate-700 group-hover:text-slate-300 transition">
+							<div class="flex items-center justify-between">
+								<span><i class="fas fa-users text-emerald-500 mr-2"></i> Seating</span>
+								<strong class="font-bold text-slate-900 group-hover:text-white">6 + 1 Chauffeur</strong>
+							</div>
+							<div class="flex items-center justify-between">
+								<span><i class="fas fa-suitcase text-amber-500 mr-2"></i> Luggage</span>
+								<strong class="font-bold text-slate-900 group-hover:text-white">3-4 Bags</strong>
+							</div>
+							<div class="flex items-center justify-between">
+								<span><i class="fas fa-snowflake text-blue-500 mr-2"></i> Climate</span>
+								<strong class="font-bold text-slate-900 group-hover:text-white">Dual AC Vents</strong>
+							</div>
+						</div>
+					</div>
+
+					<div class="pt-6">
+						<div class="flex items-baseline justify-between mb-4">
+							<span class="text-xs text-slate-500 group-hover:text-slate-400 uppercase font-semibold">Tariff</span>
+							<span class="text-2xl font-extrabold text-red-600 group-hover:text-amber-400 font-heading transition">₹15 <span class="text-xs font-normal text-slate-500 group-hover:text-slate-400">/ km</span></span>
+						</div>
+						<a href="https://wa.me/919424489377?text=Hello%20Bobby%20Tour%20and%20Travels,%20I%20want%20to%20book%20Maruti%20Suzuki%20Ertiga." target="_blank" class="w-full py-3.5 px-4 rounded-xl bg-slate-900 group-hover:bg-emerald-600 text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2 transition shadow">
+							<i class="fab fa-whatsapp text-lg"></i>
+							<span>Book Ertiga</span>
+						</a>
+					</div>
+				</div>
+
+				<!-- Car 3: Mahindra Scorpio -->
+				<div class="group bg-slate-50 rounded-3xl p-7 border border-slate-200/80 hover:bg-slate-950 hover:border-slate-800 transition-all duration-300 shadow-sm hover:shadow-2xl flex flex-col justify-between transform hover:-translate-y-1.5">
+					<div>
+						<div class="flex items-center justify-between mb-4">
+							<span class="px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800 group-hover:bg-amber-500 group-hover:text-slate-950 transition">
+								Safari &amp; Ghats
+							</span>
+							<span class="text-xs font-bold text-slate-500 group-hover:text-slate-400">Rugged King</span>
+						</div>
+
+						<div class="w-16 h-16 rounded-2xl bg-white group-hover:bg-slate-900 border border-slate-200 group-hover:border-slate-800 flex items-center justify-center text-amber-500 text-3xl mb-5 shadow-sm transition">
+							<i class="fas fa-truck-monster"></i>
+						</div>
+
+						<h3 class="text-xl font-bold font-heading text-slate-900 group-hover:text-white mb-2 transition">
+							Mahindra Scorpio
+						</h3>
+						<p class="text-[15px] text-slate-600 group-hover:text-slate-300 leading-relaxed mb-6 transition">
+							High road clearance SUV built for jungle terrain, rough roads, and ghat climbs.
+						</p>
+
+						<!-- Specs Grid -->
+						<div class="space-y-2 pb-6 border-b border-slate-200 group-hover:border-slate-800 text-xs sm:text-sm text-slate-700 group-hover:text-slate-300 transition">
+							<div class="flex items-center justify-between">
+								<span><i class="fas fa-users text-amber-500 mr-2"></i> Seating</span>
+								<strong class="font-bold text-slate-900 group-hover:text-white">7 Seater</strong>
+							</div>
+							<div class="flex items-center justify-between">
+								<span><i class="fas fa-suitcase text-amber-500 mr-2"></i> Luggage</span>
+								<strong class="font-bold text-slate-900 group-hover:text-white">Heavy Luggage</strong>
+							</div>
+							<div class="flex items-center justify-between">
+								<span><i class="fas fa-snowflake text-blue-500 mr-2"></i> Climate</span>
+								<strong class="font-bold text-slate-900 group-hover:text-white">Front &amp; Rear AC</strong>
+							</div>
+						</div>
+					</div>
+
+					<div class="pt-6">
+						<div class="flex items-baseline justify-between mb-4">
+							<span class="text-xs text-slate-500 group-hover:text-slate-400 uppercase font-semibold">Tariff</span>
+							<span class="text-2xl font-extrabold text-red-600 group-hover:text-amber-400 font-heading transition">₹18 <span class="text-xs font-normal text-slate-500 group-hover:text-slate-400">/ km</span></span>
+						</div>
+						<a href="https://wa.me/919424489377?text=Hello%20Bobby%20Tour%20and%20Travels,%20I%20want%20to%20book%20Mahindra%20Scorpio." target="_blank" class="w-full py-3.5 px-4 rounded-xl bg-slate-900 group-hover:bg-emerald-600 text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2 transition shadow">
+							<i class="fab fa-whatsapp text-lg"></i>
+							<span>Book Scorpio</span>
+						</a>
+					</div>
+				</div>
+
+				<!-- Car 4: Toyota Innova Crysta -->
+				<div class="group bg-slate-50 rounded-3xl p-7 border-2 border-red-500/30 hover:bg-slate-950 hover:border-red-500 transition-all duration-300 shadow-md hover:shadow-2xl flex flex-col justify-between transform hover:-translate-y-1.5 relative overflow-hidden">
+					<div class="absolute top-0 right-0 bg-red-600 text-white text-[10px] font-extrabold uppercase px-3 py-1 rounded-bl-xl tracking-wider">
+						VIP Luxury
+					</div>
+					<div>
+						<div class="flex items-center justify-between mb-4">
+							<span class="px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700 group-hover:bg-red-600 group-hover:text-white transition">
+								VIP Flagship
+							</span>
+							<span class="text-xs font-bold text-slate-500 group-hover:text-slate-400">Ultimate Comfort</span>
+						</div>
+
+						<div class="w-16 h-16 rounded-2xl bg-white group-hover:bg-slate-900 border border-slate-200 group-hover:border-slate-800 flex items-center justify-center text-red-600 text-3xl mb-5 shadow-sm transition">
+							<i class="fas fa-crown"></i>
+						</div>
+
+						<h3 class="text-xl font-bold font-heading text-slate-900 group-hover:text-white mb-2 transition">
+							Toyota Innova Crysta
+						</h3>
+						<p class="text-[15px] text-slate-600 group-hover:text-slate-300 leading-relaxed mb-6 transition">
+							Gold standard for highway journeys, weddings, VIP travel, and long distance trips.
+						</p>
+
+						<!-- Specs Grid -->
+						<div class="space-y-2 pb-6 border-b border-slate-200 group-hover:border-slate-800 text-xs sm:text-sm text-slate-700 group-hover:text-slate-300 transition">
+							<div class="flex items-center justify-between">
+								<span><i class="fas fa-couch text-red-500 mr-2"></i> Seating</span>
+								<strong class="font-bold text-slate-900 group-hover:text-white">6+1 / 7+1 Captain</strong>
+							</div>
+							<div class="flex items-center justify-between">
+								<span><i class="fas fa-suitcase text-amber-500 mr-2"></i> Luggage</span>
+								<strong class="font-bold text-slate-900 group-hover:text-white">5+ Bags Capacity</strong>
+							</div>
+							<div class="flex items-center justify-between">
+								<span><i class="fas fa-snowflake text-blue-500 mr-2"></i> Climate</span>
+								<strong class="font-bold text-slate-900 group-hover:text-white">Tri-Zone Auto AC</strong>
+							</div>
+						</div>
+					</div>
+
+					<div class="pt-6">
+						<div class="flex items-baseline justify-between mb-4">
+							<span class="text-xs text-slate-500 group-hover:text-slate-400 uppercase font-semibold">Tariff</span>
+							<span class="text-2xl font-extrabold text-red-600 group-hover:text-amber-400 font-heading transition">₹20 <span class="text-xs font-normal text-slate-500 group-hover:text-slate-400">/ km</span></span>
+						</div>
+						<a href="https://wa.me/919424489377?text=Hello%20Bobby%20Tour%20and%20Travels,%20I%20want%20to%20book%20Toyota%20Innova%20Crysta." target="_blank" class="w-full py-3.5 px-4 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2 transition shadow-lg shadow-red-600/30">
+							<i class="fab fa-whatsapp text-lg"></i>
+							<span>Book Crysta</span>
+						</a>
+					</div>
+				</div>
+
+			</div>
+
+		</div>
+	</section>
+
+	<!-- 2. POPULAR DESTINATIONS: Card Grid with Gradient Overlays -->
+	{% if regions %}
+	<section id="destinations" class="py-20 bg-slate-100">
+		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+			
+			<div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+				<div>
+					<span class="inline-block text-xs font-bold tracking-widest text-red-600 uppercase mb-2">Prime Madhya Pradesh Routes</span>
+					<h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">Popular Travel Destinations</h2>
+					<p class="text-slate-600 text-base sm:text-lg mt-2 max-w-2xl">
+						Direct luxury cabs and roundtrip packages connecting Shahdol to India's top tiger reserves, sacred temples, and major cities.
+					</p>
+				</div>
+				<a href="{% url 'tour:all-regions' %}" class="inline-flex items-center gap-2 text-sm font-bold text-red-600 hover:text-red-700 group self-start md:self-auto">
+					<span>View All Destinations</span>
+					<i class="icon-arrow-right22 group-hover:translate-x-1 transition-transform"></i>
+				</a>
+			</div>
+
+			<!-- Cards Grid -->
+			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+				{% for region in regions %}
+				<div class="group relative rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 bg-slate-900 flex flex-col justify-end min-h-[390px]">
+					<!-- Destination Image -->
+					<img src="{% if region.region_image %}{{ region.region_image.url }}{% else %}{% static 'images/hero_banner.jpg' %}{% endif %}" alt="{{ region.region_title }}" class="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-110 transition duration-700 ease-out">
+					
+					<!-- Card Top Badge -->
+					<div class="absolute top-4 left-4 z-10">
+						{% if 'Bandhavgarh' in region.region_title %}
+							<span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold bg-amber-500 text-slate-950 shadow-md">
+								🐅 Safari Special
+							</span>
+						{% elif 'Amarkantak' in region.region_title %}
+							<span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold bg-rose-600 text-white shadow-md">
+								🙏 Sacred Pilgrimage
+							</span>
+						{% elif 'Jabalpur' in region.region_title %}
+							<span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold bg-blue-600 text-white shadow-md">
+								🌊 Marble Rocks Tour
+							</span>
+						{% elif 'Bhopal' in region.region_title %}
+							<span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold bg-emerald-600 text-white shadow-md">
+								⚡ One-Way Available
+							</span>
+						{% else %}
+							<span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold bg-slate-900/90 text-white backdrop-blur-md border border-white/20">
+								⭐ Popular Route
+							</span>
+						{% endif %}
+					</div>
+
+					<!-- Deep Gradient Text Overlay at the Bottom -->
+					<div class="relative z-10 p-6 sm:p-8 bg-gradient-to-t from-slate-950 via-slate-950/85 to-transparent pt-28">
+						<h3 class="text-2xl font-bold text-white mb-2 group-hover:text-amber-300 transition-colors">
+							{{ region.region_title }}
+						</h3>
+						<p class="text-slate-200 text-[15px] sm:text-base line-clamp-2 leading-relaxed mb-4">
+							{{ region.region_description|striptags|slice:":120" }}...
+						</p>
+						<div class="flex items-center justify-between pt-3 border-t border-white/10">
+							<span class="text-xs sm:text-sm font-semibold text-slate-300">Doorstep Pickup in Shahdol</span>
+							<a href="{% url 'tour:region-detail' region.region_slug %}" class="inline-flex items-center gap-1.5 text-[15px] sm:text-base font-bold text-white group-hover:text-red-400 transition">
+								<span>Explore Tours</span>
+								<i class="icon-arrow-right22 text-xs"></i>
+							</a>
+						</div>
+					</div>
 				</div>
 				{% endfor %}
 			</div>
 
-			<div class="col-md-12 text-center animate-box">
-				<p><a class="btn btn-success btn-outline-success btn-lg" href="{% url 'marketing:all-testimonials' %}">See All Testimonials <i class="icon-arrow-right22"></i></a></p>
+		</div>
+	</section>
+	{% endif %}
+
+	<!-- 3. SERVICES & FLEET CAPABILITIES: Bento-Style Grid -->
+	{% if activities %}
+	<section class="py-20 bg-white">
+		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+			
+			<div class="text-center max-w-3xl mx-auto mb-16">
+				<span class="inline-block text-xs font-bold tracking-widest text-red-600 uppercase mb-2">Our Core Offerings</span>
+				<h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">Everything You Need for Road Travel</h2>
+				<p class="text-slate-600 text-base sm:text-lg mt-3">
+					From daily local hires to highway outstation cabs and Bandhavgarh tiger safaris, enjoy comfortable journeys with Bobby Tour &amp; Travels.
+				</p>
+			</div>
+
+			<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+				{% for activity in activities %}
+				<div class="group p-8 rounded-3xl bg-slate-50 border border-slate-200/80 hover:bg-slate-950 hover:border-slate-800 transition-all duration-300 shadow-sm hover:shadow-2xl transform hover:-translate-y-1.5 flex flex-col justify-between">
+					<div>
+						<!-- Icon container -->
+						<div class="w-14 h-14 rounded-2xl bg-red-600/10 group-hover:bg-red-600 text-red-600 group-hover:text-white flex items-center justify-center text-2xl transition duration-300 mb-6 shadow-sm">
+							{% if 'icon-' in activity.activity_icon %}
+								<i class="{{ activity.activity_icon }}"></i>
+							{% else %}
+								<i class="icon-road"></i>
+							{% endif %}
+						</div>
+						<h3 class="text-lg sm:text-xl font-bold text-slate-900 group-hover:text-white mb-3 transition-colors">
+							{{ activity.activity_title }}
+						</h3>
+						<p class="text-[15px] sm:text-base text-slate-700 group-hover:text-slate-200 leading-relaxed mb-6 transition-colors">
+							{{ activity.activity_description|striptags|slice:":110" }}...
+						</p>
+					</div>
+					<a href="{% url 'tour:activity-detail' activity.activity_slug %}" class="inline-flex items-center gap-1.5 text-[15px] sm:text-base font-bold text-red-600 group-hover:text-red-400 transition-colors">
+						<span>Learn Details</span>
+						<i class="icon-arrow-right22 text-xs group-hover:translate-x-1 transition-transform"></i>
+					</a>
+				</div>
+				{% endfor %}
 			</div>
 
 		</div>
-	</div>
+	</section>
 	{% endif %}
-	
-	{% endblock content %}
 
+	<!-- 4. SIGNATURE PACKAGES & FLEET OPTIONS: Luxury Midnight Section -->
+	{% if tours %}
+	<section class="py-20 bg-slate-950 text-white">
+		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+			
+			<div class="flex flex-col md:flex-row md:items-end justify-between mb-14 gap-4">
+				<div>
+					<span class="inline-block text-xs font-bold tracking-widest text-red-500 uppercase mb-2">Featured Packages</span>
+					<h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Featured Tours &amp; Outstation Routes</h2>
+					<p class="text-slate-400 text-base sm:text-lg mt-2 max-w-2xl">
+						Fixed price, transparent packages with brand new luxury AC cars and roundtrip options from Shahdol.
+					</p>
+				</div>
+				<a href="{% url 'tour:all-tours' %}" class="inline-flex items-center gap-2 text-sm font-bold text-red-400 hover:text-red-300 group self-start md:self-auto">
+					<span>View All Routes</span>
+					<i class="icon-arrow-right22 group-hover:translate-x-1 transition-transform"></i>
+				</a>
+			</div>
+
+			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+				{% for tour in tours %}
+				<div class="group bg-slate-900 rounded-3xl overflow-hidden border border-slate-800 hover:border-red-500/60 shadow-lg hover:shadow-2xl hover:shadow-red-950/40 transition-all duration-300 flex flex-col justify-between">
+					
+					<!-- Tour Thumbnail -->
+					<div class="relative h-52 overflow-hidden bg-slate-800">
+						<img src="{% if tour.tour_image %}{{ tour.tour_image.url }}{% else %}{% static 'images/hero_banner.jpg' %}{% endif %}" alt="{{ tour.tour_title }}" class="w-full h-full object-cover object-center group-hover:scale-105 transition duration-500">
+						<div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent"></div>
+						<div class="absolute top-3 right-3">
+							<span class="px-3 py-1 rounded-full text-xs font-extrabold bg-red-600 text-white backdrop-blur-md shadow-md">
+								{% if tour.starting_price %}{{ tour.starting_price }}{% else %}Starting ₹2,499{% endif %}
+							</span>
+						</div>
+					</div>
+
+					<!-- Tour Info -->
+					<div class="p-6 flex-1 flex flex-col justify-between">
+						<div>
+							<h3 class="text-base sm:text-lg font-bold text-white mb-2 group-hover:text-red-400 transition line-clamp-2">
+								<a href="{% url 'tour:tour-detail' tour.tour_slug %}">{{ tour.tour_title }}</a>
+							</h3>
+							<p class="text-slate-200 text-[15px] line-clamp-2 leading-relaxed mb-4">
+								{{ tour.tour_description|striptags|slice:":90" }}...
+							</p>
+						</div>
+
+						<div class="pt-4 border-t border-slate-800 flex items-center justify-between">
+							<div>
+								<span class="text-xs text-slate-400 uppercase tracking-wider font-semibold block">Package Tariff</span>
+								<span class="text-base sm:text-lg font-extrabold text-amber-400">
+									{% if tour.starting_price %}{{ tour.starting_price }}{% else %}Starting ₹2,499{% endif %}
+								</span>
+							</div>
+							<a href="{% url 'tour:tour-detail' tour.tour_slug %}" class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold text-sm transition transform group-hover:scale-105 shadow-md">
+								<span>Explore</span>
+								<i class="icon-arrow-right22 text-xs"></i>
+							</a>
+						</div>
+					</div>
+				</div>
+				{% endfor %}
+			</div>
+
+		</div>
+	</section>
+	{% endif %}
+
+	<!-- 5. VERIFIED CLIENT TESTIMONIALS: Authentic WhatsApp & Traveler Review Cards -->
+	{% if testimonials %}
+	<section class="py-20 bg-slate-100/70 border-y border-slate-200/80">
+		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+			
+			<div class="flex flex-col md:flex-row md:items-end justify-between mb-14 gap-6">
+				<div>
+					<div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 mb-3 shadow-xs">
+						<i class="fab fa-whatsapp text-emerald-600 text-sm"></i>
+						<span>100% Verified Customer Feedback</span>
+					</div>
+					<h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+						Real Experiences from Real Travelers
+					</h2>
+					<p class="text-slate-600 text-base sm:text-lg mt-2 max-w-2xl">
+						Direct feedback from tourists, pilgrims, and families across Shahdol, Bandhavgarh, Jabalpur, and Amarkantak.
+					</p>
+				</div>
+				<div class="flex items-center gap-3">
+					<div class="flex items-center gap-2 bg-white px-4 py-2.5 rounded-2xl border border-slate-200 shadow-sm">
+						<div class="flex text-amber-400 text-sm gap-0.5">
+							<i class="fas fa-star"></i>
+							<i class="fas fa-star"></i>
+							<i class="fas fa-star"></i>
+							<i class="fas fa-star"></i>
+							<i class="fas fa-star"></i>
+						</div>
+						<span class="text-xs font-bold text-slate-900">4.8 / 5.0</span>
+						<span class="text-xs text-slate-400 font-medium">(160+ reviews)</span>
+					</div>
+				</div>
+			</div>
+
+			<!-- 3-Column Reviews Bento Grid -->
+			<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+				{% for testimonial in testimonials %}
+				<div class="group bg-white rounded-3xl p-7 sm:p-8 border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-emerald-500/40 transition-all duration-300 flex flex-col justify-between relative transform hover:-translate-y-1">
+					
+					<!-- Header Tag & Rating -->
+					<div>
+						<div class="flex items-center justify-between mb-5">
+							<div class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200/60 text-emerald-700 text-xs font-bold">
+								<i class="fab fa-whatsapp text-emerald-600"></i>
+								<span>Verified Booking</span>
+							</div>
+							<div class="flex items-center text-amber-400 text-xs gap-0.5">
+								<i class="fas fa-star"></i>
+								<i class="fas fa-star"></i>
+								<i class="fas fa-star"></i>
+								<i class="fas fa-star"></i>
+								<i class="fas fa-star"></i>
+							</div>
+						</div>
+
+						<!-- Quotation mark backdrop -->
+						<div class="text-slate-200 text-3xl font-serif leading-none mb-1 select-none">&ldquo;</div>
+
+						<!-- Testimonial Content -->
+						<p class="text-slate-700 text-[15px] sm:text-base leading-relaxed mb-6 font-medium">
+							{{ testimonial.testimonial }}
+						</p>
+					</div>
+
+					<!-- Author Footer with Avatar & Verified Stamp -->
+					<div class="pt-5 border-t border-slate-100 flex items-center justify-between">
+						<div class="flex items-center gap-3.5">
+							<div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-slate-950 to-red-600 text-white font-black flex items-center justify-center text-base shadow-sm">
+								{{ testimonial.customer_name|slice:":1" }}
+							</div>
+							<div>
+								<h4 class="font-bold text-slate-900 text-sm flex items-center gap-1.5">
+									<span>{{ testimonial.customer_name }}</span>
+									<i class="fas fa-check-circle text-emerald-600 text-xs" title="Verified Traveler"></i>
+								</h4>
+								<p class="text-xs text-slate-500 flex items-center gap-1 mt-0.5">
+									<i class="fas fa-map-marker-alt text-red-500 text-[10px]"></i>
+									<span>{{ testimonial.customer_company }}</span>
+									{% if testimonial.customer_job_title %}
+									<span class="text-slate-300">&bull;</span>
+									<span>{{ testimonial.customer_job_title }}</span>
+									{% endif %}
+								</p>
+							</div>
+						</div>
+						<div class="text-emerald-600/40 group-hover:text-emerald-600 transition text-lg" title="Authentic Review">
+							<i class="fas fa-check-double text-xs"></i>
+						</div>
+					</div>
+
+				</div>
+				{% endfor %}
+			</div>
+
+			<!-- Bottom CTA Banner for Review / Booking -->
+			<div class="mt-12 text-center">
+				<p class="text-slate-500 text-xs sm:text-sm">
+					Have you recently travelled with Bobby Tour &amp; Travels? 
+					<a href="https://wa.me/919424489377?text=Hello%20Bobby%20Tour%20and%20Travels,%20I%20would%20like%20to%20share%20my%20review!" target="_blank" class="text-red-600 font-bold hover:text-red-700 underline ml-1">
+						Share your experience on WhatsApp &rarr;
+					</a>
+				</p>
+			</div>
+
+		</div>
+	</section>
+	{% endif %}
+
+	<!-- 6. TRAVEL BLOG INSIGHTS -->
+	{% if blogs %}
+	<section class="py-20 bg-white">
+		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+			
+			<div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+				<div>
+					<span class="inline-block text-xs font-bold tracking-widest text-red-600 uppercase mb-2">Travel Insights</span>
+					<h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">Latest from Bobby Travels Blog</h2>
+					<p class="text-slate-600 text-base sm:text-lg mt-2 max-w-2xl">
+						Helpful travel tips, highway route guides, Bandhavgarh safari updates, and luxury cab rental news from Shahdol.
+					</p>
+				</div>
+				<a href="{% url 'blog:all-blogs' %}" class="inline-flex items-center gap-2 text-sm font-bold text-red-600 hover:text-red-700 group self-start md:self-auto">
+					<span>All Articles</span>
+					<i class="icon-arrow-right22 group-hover:translate-x-1 transition-transform"></i>
+				</a>
+			</div>
+
+			<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+				{% for blog in blogs %}
+				<div class="group bg-slate-50 rounded-3xl overflow-hidden border border-slate-200/80 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
+					<div class="relative h-52 overflow-hidden bg-slate-200">
+						<img src="{% if blog.blog_image %}{{ blog.blog_image.url }}{% else %}{% static 'images/hero_banner.jpg' %}{% endif %}" alt="{{ blog.blog_title }}" class="w-full h-full object-cover object-center group-hover:scale-105 transition duration-500">
+					</div>
+					<div class="p-6 sm:p-7 flex-1 flex flex-col justify-between">
+						<div>
+							<span class="text-xs font-bold text-red-600 uppercase tracking-wider block mb-2">{{ blog.blog_created_at|date:"M d, Y" }}</span>
+							<h3 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-red-600 transition line-clamp-2">
+								<a href="{% url 'blog:blog-detail' blog.blog_slug %}">{{ blog.blog_title }}</a>
+							</h3>
+							<p class="text-slate-600 text-sm line-clamp-3 leading-relaxed mb-4">
+								{{ blog.blog_description|striptags|slice:":120" }}...
+							</p>
+						</div>
+						<a href="{% url 'blog:blog-detail' blog.blog_slug %}" class="inline-flex items-center gap-1.5 text-sm font-bold text-red-600 group-hover:text-red-700 transition">
+							<span>Read Full Guide</span>
+							<i class="icon-arrow-right22 text-xs group-hover:translate-x-1 transition-transform"></i>
+						</a>
+					</div>
+				</div>
+				{% endfor %}
+			</div>
+
+		</div>
+	</section>
+	{% endif %}
+
+	<!-- 7. NEWSLETTER / QUICK INQUIRY STRIP -->
+	<section class="py-14 bg-slate-900 text-white relative overflow-hidden">
+		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+			<div class="flex flex-col md:flex-row items-center justify-between gap-8">
+				<div class="max-w-xl text-center md:text-left">
+					<span class="text-xs font-bold text-red-500 uppercase tracking-widest block mb-1">Instant Booking &amp; Updates</span>
+					<h3 class="text-2xl sm:text-3xl font-extrabold text-white">Need a Cab on Short Notice?</h3>
+					<p class="text-slate-400 text-sm sm:text-base mt-2">Subscribe for seasonal discounts or call our 24x7 desk in Shahdol directly.</p>
+				</div>
+				<form method="POST" action="." class="w-full md:w-auto flex flex-col sm:flex-row gap-3">
+					{% csrf_token %}
+					<input type="email" name="subscriber_email" class="px-5 py-3.5 rounded-2xl bg-slate-800 text-white placeholder-slate-400 border border-slate-700 focus:outline-none focus:ring-2 focus:ring-red-500 w-full sm:w-80 text-sm" placeholder="Enter your email address" required="True">
+					<button class="px-7 py-3.5 rounded-2xl font-bold text-white bg-red-600 hover:bg-red-500 shadow-lg shadow-red-600/30 transition duration-300 text-sm whitespace-nowrap">
+						Subscribe
+					</button>
+				</form>
+			</div>
+		</div>
+	</section>
+
+	<!-- 8. GOOGLE MAPS & OFFICE LOCATION: Bento Grid -->
+	<section id="fh5co-location" class="py-20 bg-slate-100">
+		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+			
+			<div class="text-center max-w-3xl mx-auto mb-14">
+				<span class="inline-block text-xs font-bold tracking-widest text-red-600 uppercase mb-2">Visit Our Headquarters</span>
+				<h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">Find Us on Google Maps</h2>
+				<p class="text-slate-600 text-base sm:text-lg mt-3">
+					Drop by our head office right in front of the New Bus Stand in Shahdol for car booking, fleet inspection, and route consultations.
+				</p>
+			</div>
+
+			<!-- Bento Contact Cards -->
+			<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+				
+				<!-- Office Address Card -->
+				<div class="bg-white p-7 rounded-3xl border border-slate-200/80 shadow-sm border-t-4 border-t-red-600 flex flex-col justify-between">
+					<div>
+						<div class="w-12 h-12 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center text-xl mb-4">
+							<i class="icon-map-pin"></i>
+						</div>
+						<h3 class="font-bold text-slate-900 text-lg sm:text-xl mb-2">Office Address</h3>
+						<p class="text-slate-700 text-[15px] sm:text-base leading-relaxed">
+							<strong>Bobby Tour and Travels</strong><br>
+							In front of New Bus Stand, Burhar Road,<br>
+							Shahdol, Madhya Pradesh - 484001
+						</p>
+					</div>
+					<a href="https://maps.google.com/?q=Bobby+Tour+and+Travels+New+Bus+Stand+Shahdol+Madhya+Pradesh+484001" target="_blank" class="inline-flex items-center gap-1.5 text-[15px] sm:text-base font-bold text-red-600 hover:text-red-700 mt-5">
+						<span>Get Directions on Map</span>
+						<i class="icon-arrow-right22 text-xs"></i>
+					</a>
+				</div>
+
+				<!-- 24x7 Helpline Card -->
+				<div class="bg-white p-7 rounded-3xl border border-slate-200/80 shadow-sm border-t-4 border-t-emerald-500 flex flex-col justify-between">
+					<div>
+						<div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl mb-4">
+							<i class="icon-phone"></i>
+						</div>
+						<h3 class="font-bold text-slate-900 text-lg sm:text-xl mb-2">24x7 Helpline</h3>
+						<p class="text-slate-700 text-[15px] mb-3">Call anytime for outstation emergency or luxury travel:</p>
+						<p class="text-lg font-bold text-slate-900 mb-1">
+							<a href="tel:+919424489377" class="hover:text-red-600 transition">+91 9424489377</a>
+						</p>
+						<p class="text-lg font-bold text-slate-900">
+							<a href="tel:+919131043977" class="hover:text-red-600 transition">+91 9131043977</a>
+						</p>
+					</div>
+					<a href="https://wa.me/919424489377?text=Hello%20Bobby%20Tour%20and%20Travels,%20I%20want%20to%20book%20a%20car." target="_blank" class="inline-flex items-center gap-1.5 text-[15px] sm:text-base font-bold text-emerald-600 hover:text-emerald-700 mt-5">
+						<span>Chat on WhatsApp</span>
+						<i class="icon-bubble text-xs"></i>
+					</a>
+				</div>
+
+				<!-- Availability Card -->
+				<div class="bg-white p-7 rounded-3xl border border-slate-200/80 shadow-sm border-t-4 border-t-blue-600 flex flex-col justify-between">
+					<div>
+						<div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl mb-4">
+							<i class="icon-clock"></i>
+						</div>
+						<h3 class="font-bold text-slate-900 text-lg sm:text-xl mb-2">Availability</h3>
+						<p class="text-slate-700 text-[15px] sm:text-base leading-relaxed">
+							<strong>Office Hours:</strong> Mon - Sun: 7:00 AM – 10:00 PM<br>
+							<strong>Cab Services:</strong> 24 Hours / 7 Days a week<br>
+							<strong>Doorstep Pickup:</strong> Shahdol, Anuppur, Umaria
+						</p>
+					</div>
+					<a href="tel:+919424489377" class="inline-flex items-center gap-1.5 text-[15px] sm:text-base font-bold text-blue-600 hover:text-blue-700 mt-5">
+						<span>Book Immediate Pickup</span>
+						<i class="icon-arrow-right22 text-xs"></i>
+					</a>
+				</div>
+			</div>
+
+			<!-- Interactive Map Frame -->
+			<div class="rounded-3xl overflow-hidden shadow-xl border border-slate-200/80 bg-white">
+				<iframe src="https://maps.google.com/maps?q=Bobby+Tour+and+Travels,+New+Bus+Stand,+Shahdol,+Madhya+Pradesh+484001&t=&z=16&ie=UTF8&iwloc=&output=embed" width="100%" height="450" style="border:0; display:block;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+			</div>
+
+		</div>
+	</section>
+
+	<!-- Fare Estimator Interactive Calculator Script -->
+	<script>
+	document.addEventListener('DOMContentLoaded', function() {
+		var routeSelect = document.getElementById('fare-route');
+		var vehicleSelect = document.getElementById('fare-vehicle');
+		var btnOneway = document.getElementById('type-oneway');
+		var btnRoundtrip = document.getElementById('type-roundtrip');
+		var kmDisplay = document.getElementById('fare-km');
+		var rateDisplay = document.getElementById('fare-rate');
+		var totalDisplay = document.getElementById('fare-total');
+		var whatsappBtn = document.getElementById('fare-whatsapp-btn');
+		var isRoundTrip = false;
+
+		if (!routeSelect || !vehicleSelect || !btnOneway || !btnRoundtrip) return;
+
+		function calculateFare() {
+			var optRoute = routeSelect.options[routeSelect.selectedIndex];
+			var optVehicle = vehicleSelect.options[vehicleSelect.selectedIndex];
+			var baseKm = parseInt(optRoute.getAttribute('data-km') || '100', 10);
+			var rate = parseInt(optVehicle.getAttribute('data-rate') || '12', 10);
+			var km = isRoundTrip ? (baseKm * 2) : baseKm;
+			
+			var baseFare = km * rate;
+			var maxFare = Math.round(baseFare * 1.15); // Buffer for estimate range
+
+			kmDisplay.textContent = km + ' km' + (isRoundTrip ? ' (Round Trip)' : ' (One-Way)');
+			rateDisplay.textContent = '₹' + rate + '/km';
+			totalDisplay.textContent = '₹' + baseFare.toLocaleString('en-IN') + ' - ₹' + maxFare.toLocaleString('en-IN');
+
+			var message = "Hello Bobby Tour and Travels, I want to book " + optVehicle.value + " for Shahdol to " + optRoute.value + " (" + (isRoundTrip ? 'Round Trip, ' : 'One-Way, ') + km + " km, Estimated Fare: ₹" + baseFare.toLocaleString('en-IN') + "). Please confirm availability.";
+			whatsappBtn.href = "https://wa.me/919424489377?text=" + encodeURIComponent(message);
+		}
+
+		btnOneway.addEventListener('click', function() {
+			isRoundTrip = false;
+			btnOneway.className = "py-2.5 px-3 rounded-lg text-xs sm:text-sm font-bold transition bg-red-600 text-white shadow";
+			btnRoundtrip.className = "py-2.5 px-3 rounded-lg text-xs sm:text-sm font-bold transition text-slate-400 hover:text-white";
+			calculateFare();
+		});
+
+		btnRoundtrip.addEventListener('click', function() {
+			isRoundTrip = true;
+			btnRoundtrip.className = "py-2.5 px-3 rounded-lg text-xs sm:text-sm font-bold transition bg-red-600 text-white shadow";
+			btnOneway.className = "py-2.5 px-3 rounded-lg text-xs sm:text-sm font-bold transition text-slate-400 hover:text-white";
+			calculateFare();
+		});
+
+		routeSelect.addEventListener('change', calculateFare);
+		vehicleSelect.addEventListener('change', calculateFare);
+
+		calculateFare();
+	});
+	</script>
+
+	{% endblock content %}

@@ -1,105 +1,118 @@
-
 {% extends 'base.html' %}
 {% load static %}
 
+{% block meta_content %}
+    <title>Popular Destinations - {{ this_app.app_name }}</title>
+    <meta name="description" content="Explore popular travel destinations from Shahdol: Bandhavgarh Tiger Reserve, Amarkantak Narmada Udgam, Jabalpur Bhedaghat, and major MP cities." />
+    <meta name="keywords" content="Bobby Tour and Travels, Shahdol Destinations, Bandhavgarh, Amarkantak, Jabalpur, Bhopal Cab" />
 
-	{% block meta_content %}
-		<title>All Regions - {{ this_app.app_name }}</title>
-		<meta name="description" content="{{ this_app.app_description }}" />
-		<meta name="keywords" content="{{ this_app.app_keywords }}" />
+    <!-- Open Graph -->
+    <meta property="og:title" content="Popular Destinations - {{ this_app.app_name }}"/>
+    {% if this_app.app_logo %}
+    <meta property="og:image" content="{{ this_app.app_logo.url }}"/>
+    {% endif %}
+    <meta property="og:url" content="{% url 'tour:all-regions' %}"/>
+    <meta property="og:site_name" content="{{ this_app.app_name }}"/>
+    <meta property="og:description" content="Explore popular travel destinations from Shahdol: Bandhavgarh Tiger Reserve, Amarkantak Narmada Udgam, Jabalpur Bhedaghat, and major MP cities."/>
+{% endblock meta_content %}
 
+{% block content %}
 
-		<!-- Facebook and Twitter integration -->
-		<meta property="og:title" content="All Regions - {{ this_app.app_name }}"/>
-		<meta property="og:image" content="{{ this_app.app_logo.url }}"/>
-		<meta property="og:url" content="{% url 'tour:all-regions' %}"/>
-		<meta property="og:site_name" content="{{ this_app.app_name }} - {{ this_app.app_title}}"/>
-		<meta property="og:description" content="{{ this_app.app_description }}"/>
+<!-- Hero Header Section -->
+<section class="relative bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white py-16 md:py-20 border-b border-slate-800">
+    <div class="absolute inset-0 opacity-15 bg-[radial-gradient(#e11d48_1px,transparent_1px)] [background-size:20px_20px] pointer-events-none"></div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-600/20 border border-red-500/30 text-red-300 text-xs font-semibold tracking-wider uppercase mb-4">
+            <span class="w-2 h-2 rounded-full bg-red-500"></span>
+            Prime Madhya Pradesh Circuits
+        </div>
+        <h1 class="text-3xl md:text-5xl font-extrabold font-heading text-white tracking-tight mb-4">
+            Popular Destinations
+        </h1>
+        <p class="text-slate-300 max-w-2xl mx-auto text-base md:text-lg leading-relaxed">
+            Discover breathtaking tiger reserves, holy rivers, and iconic heritage sites with seamless door-to-door cab rentals from Shahdol.
+        </p>
+    </div>
+</section>
 
-		<meta name="twitter:title" content="All Regions - {{ this_app.app_name }}" />
-		<meta name="twitter:image" content="{{ this_app.app_logo.url }}" />
-		<meta name="twitter:url" content="{% url 'tour:all-regions' %}" />
-		<meta name="twitter:description" content="{{ this_app.app_description }}" />
-		<meta name="twitter:card" content="summary_large_image" />
-	{% endblock meta_content %}
+<!-- Regions Grid Section -->
+<section class="py-16 md:py-20 bg-slate-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        {% if regions %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for region in regions %}
+            <div class="group relative rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition duration-500 transform hover:-translate-y-1.5 h-96 bg-slate-900">
+                {% if region.region_image %}
+                <img src="{{ region.region_image.url }}" alt="{{ region.region_title }}" class="w-full h-full object-cover group-hover:scale-110 transition duration-700 ease-out">
+                {% else %}
+                <img src="{% static 'images/hero_banner.jpg' %}" alt="{{ region.region_title }}" class="w-full h-full object-cover opacity-80 group-hover:scale-110 transition duration-700 ease-out">
+                {% endif %}
+                
+                <!-- Gradient Overlay -->
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+                
+                <!-- Floating Badge -->
+                <div class="absolute top-4 left-4">
+                    <span class="px-3.5 py-1 rounded-full text-xs font-semibold bg-slate-950/70 backdrop-blur-md text-white border border-white/20">
+                        <i class="fas fa-map-pin text-red-400 mr-1"></i> Destination Hub
+                    </span>
+                </div>
 
+                <!-- Content Bottom -->
+                <div class="absolute bottom-6 left-6 right-6">
+                    <h3 class="text-2xl font-bold font-heading text-white mb-2 group-hover:text-red-400 transition">
+                        {{ region.region_title }}
+                    </h3>
+                    <p class="text-slate-300 text-xs line-clamp-2 leading-relaxed mb-4">
+                        {{ region.region_description|striptags }}
+                    </p>
+                    <a href="{% url 'tour:region-detail' region.region_slug %}" class="inline-flex items-center gap-2 px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold transition shadow-md">
+                        Explore Tours & Cabs <i class="fas fa-arrow-right text-[10px]"></i>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
 
-	{% block content %}
+        <!-- Pagination -->
+        {% if is_paginated %}
+        <div class="mt-12 flex justify-center">
+            <nav class="inline-flex rounded-2xl shadow-sm -space-x-px bg-white p-1 border border-slate-200" aria-label="Pagination">
+                {% if page_obj.has_previous %}
+                <a href="?page=1" class="px-4 py-2 text-xs font-medium text-slate-600 hover:text-red-600 hover:bg-slate-50 rounded-xl transition">
+                    &laquo; First
+                </a>
+                <a href="?page={{ page_obj.previous_page_number }}" class="px-4 py-2 text-xs font-medium text-slate-600 hover:text-red-600 hover:bg-slate-50 rounded-xl transition">
+                    Previous
+                </a>
+                {% endif %}
 
-		
-		<!-- Regions Starts Here -->
-		{% if regions %}
-			<div id="fh5co-tours" class="fh5co-section-gray">
-				<div class="container">
-					<div class="row">
-						<div class="col-md-8 col-md-offset-2 text-center heading-section animate-box">
-							<h3>Best Regions</h3>
-							<p>Best Regions to find adventure activities like Trekking, Mountain Climbing, Rafting, Canyoning and Many More.</p>
-						</div>
-					</div>
-					<div class="row">
+                <span class="px-4 py-2 text-xs font-bold text-red-600 bg-red-50 rounded-xl">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                </span>
 
-						{% for region in regions %}
-							<div class="col-md-4 col-sm-6 fh5co-tours animate-box" data-animate-effect="fadeIn">
-								<div href="#">
-									{% if region.region_image %}
-									<img src="{{ region.region_image.url }}" alt="{{ region.region_title }}" class="img-responsive" style="height:320px; width:100%;">
-									{% else %}
-									<img src="{% static 'images/no-image.jpg' %}" alt="Travel Nepal" class="img-responsive" style="height:320px; width:100%;">
-									{% endif %}
+                {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}" class="px-4 py-2 text-xs font-medium text-slate-600 hover:text-red-600 hover:bg-slate-50 rounded-xl transition">
+                    Next
+                </a>
+                <a href="?page={{ page_obj.paginator.num_pages }}" class="px-4 py-2 text-xs font-medium text-slate-600 hover:text-red-600 hover:bg-slate-50 rounded-xl transition">
+                    Last &raquo;
+                </a>
+                {% endif %}
+            </nav>
+        </div>
+        {% endif %}
 
-									<div class="desc">
-										<span></span>
-										<h3>{{ region.region_title }}</h3>
-										<br>
-										{% comment %} <span>3 nights + Flight 5*Hotel</span>
-										<span class="price">$1,000</span> {% endcomment %}
-										<a class="btn btn-primary btn-outline" href="{% url 'tour:region-detail' region.region_slug %}">Explore Tours <i class="icon-arrow-right22"></i></a>
-									</div>
-								</div>
-							</div>
-						{% endfor %}
+        {% else %}
+        <div class="text-center py-16 bg-white rounded-3xl border border-slate-200 p-8 shadow-sm">
+            <i class="fas fa-map-marked text-4xl text-slate-300 mb-3"></i>
+            <h3 class="text-lg font-bold text-slate-700">No Destinations Currently Listed</h3>
+            <p class="text-slate-500 text-sm mt-1">Contact Bobby Tour & Travels for customized routes across India.</p>
+        </div>
+        {% endif %}
 
-						
-					</div>
-					
-						<!-- Pagination Starts Here -->
-						{% if is_paginated %}
-							<div class="text-center">
-								<nav aria-label="Page navigation example">
-								  <ul class="pagination justify-content-center">
-								  	{% if page_obj.has_previous %}
-								  	<li class="page-item">
-								      <a class="page-link" href="?page=1" tabindex="-1" aria-disabled="true">&laquo; First</a>
-								    </li>
-								    <li class="page-item">
-								      <a class="page-link" href="?page={{ page_obj.previous_page_number }}" tabindex="-1" aria-disabled="true">Previous</a>
-								    </li>
-								    {% endif %}
+    </div>
+</section>
 
-								    
-								    <li class="page-item active" aria-current="page">
-								      <a class="page-link" href="?page={{ page_obj.number }}"> Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }} <span class="sr-only">(current)</span></a>
-								    </li>
-								    
-								    {% if page_obj.has_next %}
-								    <li class="page-item">
-								      <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
-								    </li>
-								    <li class="page-item">
-								      <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
-								    </li>
-								    {% endif %}
-
-								  </ul>
-								</nav>
-							</div>
-						{% endif %}
-						<!-- Pagination Ends Here -->
-				</div>
-			</div>
-		{% endif %}
-		<!-- Regions Ends Here -->
-	
-	{% endblock content %}
-
+{% endblock content %}

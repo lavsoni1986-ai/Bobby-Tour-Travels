@@ -61,6 +61,11 @@ class Testimonials(models.Model):
 	testimonial_updated_at = models.DateTimeField(auto_now=True, verbose_name='Updated Date')
 
 
+	class Meta:
+		verbose_name = "Customer Testimonial"
+		verbose_name_plural = "Customer Testimonials"
+		ordering = ['-testimonial_created_at']
+
 	def __str__(self):
 		return self.customer_name
 	

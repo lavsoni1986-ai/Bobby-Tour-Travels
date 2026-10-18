@@ -43,6 +43,11 @@ class Activity(models.Model):
 	seo_activity_keywords = models.TextField(blank=True, null=True, verbose_name="SEO Activity Keywords (Separated by Commas)")
 	seo_activity_description = models.TextField(blank=True, null=True, verbose_name="SEO Activity Description (160 Characters Long)")
 
+	class Meta:
+		verbose_name = "Activity"
+		verbose_name_plural = "Activities"
+		ordering = ['-activity_created_at']
+
 	def __str__(self):
 		return self.activity_title
 
@@ -79,6 +84,8 @@ class Region(models.Model):
 
 
 	class Meta:
+		verbose_name = "Region"
+		verbose_name_plural = "Regions"
 		ordering = ['-region_created_at']
 
 
@@ -94,6 +101,13 @@ class Tour(models.Model):
 			max_length = 10,
 			verbose_name = 'Tour Difficulty'
 		)
+	starting_price = models.CharField(
+		max_length=100,
+		blank=True,
+		default="Starting ₹2,499",
+		verbose_name="Starting Price / Tariff",
+		help_text="e.g. 'Starting ₹2,499' or '₹12/km (Outstation)'"
+	)
 	tour_description = RichTextField(blank=True, null=True, verbose_name="Tour Description")
 	tour_image = models.ImageField(upload_to='tours/', blank=True, null=True, verbose_name="Tour Image")
 	tour_map = models.ImageField(upload_to='maps/', blank=True, null=True, verbose_name="Tour Map")
@@ -121,14 +135,74 @@ class Tour(models.Model):
 	seo_tour_keywords = models.TextField(blank=True, null=True, verbose_name="SEO Tour Keywords Separated by Commas")
 	seo_tour_description = models.TextField(blank=True, null=True, verbose_name="SEO Tour Description (160 Characters Long)")
 
+	class Meta:
+		verbose_name = "Tour Package"
+		verbose_name_plural = "Tour Packages"
+		ordering = ['-tour_created_at']
+
 	def __str__(self):
 		return self.tour_title
 
 
+class BookingEnquiry(models.Model):
+	"""Stores cab/tour booking enquiries submitted via the Contact page."""
+
+	CAR_CHOICES = (
+		('', 'Any / Not Sure'),
+		('Maruti Dzire', 'Maruti Dzire (Sedan)'),
+		('Maruti Ertiga', 'Maruti Ertiga (MUV)'),
+		('Mahindra Scorpio', 'Mahindra Scorpio (SUV)'),
+		('Toyota Innova Crysta', 'Toyota Innova Crysta (Premium)'),
+	)
+
+	full_name       = models.CharField(max_length=100, verbose_name="Full Name")
+	phone_number    = models.CharField(max_length=15, verbose_name="Phone Number")
+	pickup_location = models.CharField(max_length=150, verbose_name="Pickup Location")
+	destination     = models.CharField(max_length=150, verbose_name="Destination / Route")
+	car_requirement = models.CharField(
+		max_length=100,
+		choices=CAR_CHOICES,
+		blank=True,
+		default='',
+		verbose_name="Car Preference"
+	)
+	message     = models.TextField(blank=True, verbose_name="Additional Message")
+	created_at  = models.DateTimeField(auto_now_add=True, verbose_name="Received At")
+	is_resolved = models.BooleanField(
+		default=False,
+		verbose_name="Resolved?",
+		help_text="Mark as resolved once the customer has been contacted."
+	)
+
+	class Meta:
+		ordering = ['-created_at']
+		verbose_name = "Booking Enquiry"
+		verbose_name_plural = "Booking Enquiries"
+
+	def __str__(self):
+		return f"{self.full_name} - {self.destination} ({self.phone_number})"
 
 
+class SeasonalBanner(models.Model):
+	"""Admin-controlled promotional/seasonal announcement banners."""
 
+	title       = models.CharField(max_length=150, verbose_name="Offer Title")
+	subtitle    = models.CharField(max_length=250, verbose_name="Subtitle / Offer Details")
+	badge_text  = models.CharField(max_length=50, default="Limited Time Offer", verbose_name="Badge Text")
+	button_text = models.CharField(max_length=50, default="Book on WhatsApp", verbose_name="Button Text")
+	button_url  = models.CharField(
+		max_length=500,
+		default="https://wa.me/919424489377?text=Hello%20Bobby%20Tour%20and%20Travels,%20I%20am%20interested%20in%20your%20seasonal%20offer!",
+		verbose_name="Button Action URL / WhatsApp Link"
+	)
+	is_active   = models.BooleanField(default=True, verbose_name="Is Active?")
+	created_at  = models.DateTimeField(auto_now_add=True, verbose_name="Created At")
 
+	class Meta:
+		ordering = ['-created_at']
+		verbose_name = "Seasonal Banner"
+		verbose_name_plural = "Seasonal Banners"
 
-
+	def __str__(self):
+		return self.title
 

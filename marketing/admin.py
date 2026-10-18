@@ -18,11 +18,11 @@ class SubscriberAdmin(admin.ModelAdmin):
 
 
 class TestimonialAdmin(admin.ModelAdmin):
-	list_display = ('customer_name', 'customer_slug', 'customer_company', 'customer_job_title', 'testimonial_is_active', 'testimonial_is_featured')
-	list_editable = ('customer_slug', 'customer_company', 'customer_job_title', 'testimonial_is_active', 'testimonial_is_featured')
-	list_filter = ('testimonial_created_at', 'testimonial_is_active', 'testimonial_is_featured')
-	list_per_page = 10
-	search_fields = ('customer_name', 'customer_company')
+	list_display = ('customer_name', 'customer_company', 'customer_job_title', 'testimonial_is_active', 'testimonial_is_featured', 'testimonial_created_at')
+	list_editable = ('testimonial_is_active', 'testimonial_is_featured')
+	list_filter = ('testimonial_is_active', 'testimonial_is_featured', 'testimonial_created_at')
+	list_per_page = 15
+	search_fields = ('customer_name', 'customer_company', 'customer_job_title', 'testimonial')
 	prepopulated_fields = {"customer_slug": ("customer_name", )}
 
 

@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import View, TemplateView, ListView, DetailView
-from tour.models import Region, Activity, Tour
+from tour.models import Region, Activity, Tour, SeasonalBanner
+from tour.forms import BookingEnquiryForm
 from blog.models import Blog
 from marketing.forms import SubscribeForm
 from marketing.models import Subscriber, Testimonials
@@ -23,6 +24,7 @@ class HomePageView(TemplateView):
 		featured_tours = Tour.objects.filter(tour_is_active='yes', tour_is_featured='yes').order_by('-tour_created_at')[:1]
 		blogs = Blog.objects.filter(blog_is_active='yes', blog_is_featured='yes').order_by('-blog_created_at')[:3]
 		testimonials = Testimonials.objects.filter(testimonial_is_active='yes', testimonial_is_featured='yes').order_by('-testimonial_created_at')[:3]
+		seasonal_banner = SeasonalBanner.objects.filter(is_active=True).first()
 
 		context = {
 			'regions': regions,
@@ -30,7 +32,8 @@ class HomePageView(TemplateView):
 			'tours': tours,
 			'featured_tours': featured_tours,
 			'blogs': blogs, 
-			'testimonials': testimonials
+			'testimonials': testimonials,
+			'seasonal_banner': seasonal_banner,
 		}
 		return render(request, 'index.html', context)
 
@@ -64,7 +67,23 @@ class BlogPageView(TemplateView):
 
 
 
-class ContactPageView(TemplateView):
+class ContactPageView(View):
+	"""Handles the Contact page with an inline Booking Enquiry form."""
 	template_name = 'contact.html'
 
+	def get(self, request, *args, **kwargs):
+		form = BookingEnquiryForm()
+		return render(request, self.template_name, {'enquiry_form': form})
+
+	def post(self, request, *args, **kwargs):
+		form = BookingEnquiryForm(request.POST)
+		if form.is_valid():
+			form.save()
+			messages.success(
+				request,
+				"✅ Thank you! Your cab booking inquiry has been received. Our desk will call you shortly."
+			)
+			return redirect('page:contact')
+		# If invalid, re-render with errors
+		return render(request, self.template_name, {'enquiry_form': form})
 

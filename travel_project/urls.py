@@ -1,4 +1,3 @@
-
 from django.contrib import admin
 from django.urls import path, include
 
@@ -10,8 +9,7 @@ urlpatterns = [
     path('marketing/', include('marketing.urls')),
 ]
 
-
-# Customizing Admin Panel Texts
-admin.site.site_header = 'Django Travel Project'
-admin.site.index_title = 'Manage Travels'
-admin.site.site_title = 'Travel Site | Control Panel'
+# Customizing Admin Panel Texts - 2026 SaaS-Grade Command Center
+admin.site.site_header = "Bobby Tour & Travels | Command Center"
+admin.site.site_title = "Bobby Admin Portal"
+admin.site.index_title = "Welcome to Bobby Tour & Travels Management Dashboard"

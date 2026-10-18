@@ -1,114 +1,134 @@
-
 {% extends 'base.html' %}
 {% load static %}
 
+{% block meta_content %}
+    <title>Travel Guides & Articles - {{ this_app.app_name }}</title>
+    <meta name="description" content="Discover travel advice, road trip tips, and local destination insights from Bobby Tour & Travels Shahdol." />
+    <meta name="keywords" content="Bobby Tour and Travels Blog, MP Travel Guide, Bandhavgarh Tips, Amarkantak Route" />
 
-	{% block meta_content %}
-		<title>Blog - {{ this_app.app_name }}</title>
-		<meta name="description" content="{{ this_app.app_description }}" />
-		<meta name="keywords" content="{{ this_app.app_keywords }}" />
+    <!-- Open Graph -->
+    <meta property="og:title" content="Travel Guides & Articles - {{ this_app.app_name }}"/>
+    {% if this_app.app_logo %}
+    <meta property="og:image" content="{{ this_app.app_logo.url }}"/>
+    {% endif %}
+    <meta property="og:url" content="{% url 'blog:all-blogs' %}"/>
+    <meta property="og:site_name" content="{{ this_app.app_name }}"/>
+    <meta property="og:description" content="Discover travel advice, road trip tips, and local destination insights from Bobby Tour & Travels Shahdol."/>
+{% endblock meta_content %}
 
-		<!-- Facebook and Twitter integration -->
-		<meta property="og:title" content="Blog - {{ this_app.app_name }}"/>
-		<meta property="og:image" content="{{ this_app.app_logo.url }}"/>
-		<meta property="og:url" content="{% url 'blog:all-blogs' %}"/>
-		<meta property="og:site_name" content="{{ this_app.app_name }} - {{ this_app.app_title}}"/>
-		<meta property="og:description" content="{{ this_app.app_description }}"/>
+{% block content %}
 
-		<meta name="twitter:title" content="Blog - {{ this_app.app_name }}" />
-		<meta name="twitter:image" content="{{ this_app.app_logo.url }}" />
-		<meta name="twitter:url" content="{% url 'blog:all-blogs' %}" />
-		<meta name="twitter:description" content="{{ this_app.app_description }}" />
-		<meta name="twitter:card" content="summary_large_image" />
-	{% endblock meta_content %}
+<!-- Hero Header Section -->
+<section class="relative bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white py-16 md:py-20 border-b border-slate-800">
+    <div class="absolute inset-0 opacity-15 bg-[radial-gradient(#e11d48_1px,transparent_1px)] [background-size:20px_20px] pointer-events-none"></div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-600/20 border border-red-500/30 text-red-300 text-xs font-semibold tracking-wider uppercase mb-4">
+            <span class="w-2 h-2 rounded-full bg-red-500"></span>
+            Travel Journal & Highway Guides
+        </div>
+        <h1 class="text-3xl md:text-5xl font-extrabold font-heading text-white tracking-tight mb-4">
+            Stories & Travel Tips
+        </h1>
+        <p class="text-slate-300 max-w-2xl mx-auto text-base md:text-lg leading-relaxed">
+            Expert insights on best safari timings, scenic MP road routes, and practical travel guidance from our 40+ years on the road.
+        </p>
+    </div>
+</section>
 
+<!-- Blog Grid Section -->
+<section class="py-16 md:py-20 bg-slate-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        {% if blogs %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for blog in blogs %}
+            <article class="group bg-white rounded-3xl overflow-hidden shadow-md hover:shadow-2xl transition duration-500 border border-slate-200/80 flex flex-col transform hover:-translate-y-1.5">
+                <!-- Blog Image -->
+                <div class="relative h-60 overflow-hidden bg-slate-900">
+                    {% if blog.blog_image %}
+                        <img src="{{ blog.blog_image.url }}" alt="{{ blog.blog_title }}" class="w-full h-full object-cover group-hover:scale-108 transition duration-700 ease-out">
+                    {% else %}
+                        <img src="{% static 'images/hero_banner.jpg' %}" alt="{{ blog.blog_title }}" class="w-full h-full object-cover opacity-80 group-hover:scale-108 transition duration-700 ease-out">
+                    {% endif %}
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent"></div>
+                    
+                    <div class="absolute top-4 left-4 flex flex-wrap gap-1.5">
+                        {% for cat in blog.blog_category.all %}
+                        <span class="px-3 py-1 rounded-full text-[11px] font-semibold bg-slate-950/80 backdrop-blur-md text-white border border-white/20">
+                            {{ cat }}
+                        </span>
+                        {% endfor %}
+                    </div>
+                </div>
 
-	{% block content %}
-	
-		<!-- Blogs Starts Here -->
-		{% if blogs %}
-		<div id="fh5co-blog-section" class="fh5co-section-gray">
-			<div class="container">
-				<div class="row">
-					<div class="col-md-8 col-md-offset-2 text-center heading-section animate-box">
-						<h3>Recent From Blog</h3>
-						<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Velit est facilis maiores, perspiciatis accusamus asperiores sint consequuntur debitis.</p>
-					</div>
-				</div>
-			</div>
-			<div class="container">
-				<div class="row row-bottom-padded-md">
+                <!-- Card Content -->
+                <div class="p-6 flex-1 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center gap-2 text-xs text-slate-400 mb-3">
+                            <i class="far fa-calendar-alt text-red-500"></i>
+                            <span>{{ blog.blog_created_at|date:"M d, Y" }}</span>
+                        </div>
 
-					{% for blog in blogs %}
-					<div class="col-lg-4 col-md-4 col-sm-6">
-						<div class="fh5co-blog animate-box">
+                        <h2 class="text-xl font-bold font-heading text-slate-900 group-hover:text-red-600 transition mb-3 line-clamp-2">
+                            <a href="{% url 'blog:blog-detail' blog.blog_slug %}">{{ blog.blog_title }}</a>
+                        </h2>
 
-							{% if blog.blog_image %}
-								<a href="{% url 'blog:blog-detail' blog.blog_slug %}"><img class="img-responsive" src="{{ blog.blog_image.url }}" alt="{{ blog.blog_title }}" style="height:200px; width:100%;"></a>
-							{% else %}
-								<a href="{% url 'blog:blog-detail' blog.blog_slug %}"><img class="img-responsive" src="{% static 'images/no-image.jpg' %}" alt="{{ blog.blog_title }}" style="height:200px; width:100%;"></a>
-							{% endif %}
+                        <p class="text-slate-600 text-sm line-clamp-3 leading-relaxed mb-6">
+                            {{ blog.blog_description|striptags }}
+                        </p>
+                    </div>
 
-							<div class="blog-text">
-								<div class="prod-title">
-									<h3><a href="{% url 'blog:blog-detail' blog.blog_slug %}">{{ blog.blog_title }}</a></h3>
-									<span class="posted_by">{{ blog.blog_created_at }}</span>
-									<span class="comment"><a href="">21<i class="icon-bubble2"></i></a></span>
-									<div>{{ blog.blog_description|safe|slice:":100" }} ...</div>
-									<p><a href="{% url 'blog:blog-detail' blog.blog_slug %}">Read More...</a></p>
-								</div>
-							</div> 
-						</div>
-					</div>
-					{% endfor %}
-					<div class="clearfix visible-md-block"></div>
-				</div>
+                    <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
+                        <a href="{% url 'blog:blog-detail' blog.blog_slug %}" class="inline-flex items-center gap-1.5 text-xs font-bold text-red-600 hover:text-red-700 transition">
+                            Read Full Guide <i class="fas fa-arrow-right text-[10px]"></i>
+                        </a>
+                        <span class="text-xs text-slate-400 flex items-center gap-1">
+                            <i class="far fa-clock"></i> 3 min read
+                        </span>
+                    </div>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
 
-						<!-- Pagination Starts Here -->
-						{% if is_paginated %}
-							<div class="text-center">
-								<nav aria-label="Page navigation example">
-								  <ul class="pagination justify-content-center">
-								  	{% if page_obj.has_previous %}
-								  	<li class="page-item">
-								      <a class="page-link" href="?page=1" tabindex="-1" aria-disabled="true">&laquo; First</a>
-								    </li>
-								    <li class="page-item">
-								      <a class="page-link" href="?page={{ page_obj.previous_page_number }}" tabindex="-1" aria-disabled="true">Previous</a>
-								    </li>
-								    {% endif %}
+        <!-- Pagination -->
+        {% if is_paginated %}
+        <div class="mt-12 flex justify-center">
+            <nav class="inline-flex rounded-2xl shadow-sm -space-x-px bg-white p-1 border border-slate-200" aria-label="Pagination">
+                {% if page_obj.has_previous %}
+                <a href="?page=1" class="px-4 py-2 text-xs font-medium text-slate-600 hover:text-red-600 hover:bg-slate-50 rounded-xl transition">
+                    &laquo; First
+                </a>
+                <a href="?page={{ page_obj.previous_page_number }}" class="px-4 py-2 text-xs font-medium text-slate-600 hover:text-red-600 hover:bg-slate-50 rounded-xl transition">
+                    Previous
+                </a>
+                {% endif %}
 
-								    
-								    <li class="page-item active" aria-current="page">
-								      <a class="page-link" href="?page={{ page_obj.number }}"> Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }} <span class="sr-only">(current)</span></a>
-								    </li>
-								    
-								    {% if page_obj.has_next %}
-								    <li class="page-item">
-								      <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
-								    </li>
-								    <li class="page-item">
-								      <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
-								    </li>
-								    {% endif %}
+                <span class="px-4 py-2 text-xs font-bold text-red-600 bg-red-50 rounded-xl">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                </span>
 
-								  </ul>
-								</nav>
-							</div>
-						{% endif %}
-						<!-- Pagination Ends Here -->
+                {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}" class="px-4 py-2 text-xs font-medium text-slate-600 hover:text-red-600 hover:bg-slate-50 rounded-xl transition">
+                    Next
+                </a>
+                <a href="?page={{ page_obj.paginator.num_pages }}" class="px-4 py-2 text-xs font-medium text-slate-600 hover:text-red-600 hover:bg-slate-50 rounded-xl transition">
+                    Last &raquo;
+                </a>
+                {% endif %}
+            </nav>
+        </div>
+        {% endif %}
 
-			</div>
-		</div>
-		{% else %}
-			<div class="alert alert-danger" role="alert">
-				There are no blogs for now. Please visit later.
-			</div>
-		{% endif %}
-		<!-- Blog Ends Here -->
+        {% else %}
+        <div class="text-center py-16 bg-white rounded-3xl border border-slate-200 p-8 shadow-sm">
+            <i class="fas fa-newspaper text-4xl text-slate-300 mb-3"></i>
+            <h3 class="text-lg font-bold text-slate-700">No Articles Yet</h3>
+            <p class="text-slate-500 text-sm mt-1">Our team is compiling fresh travel tips. Check back soon!</p>
+        </div>
+        {% endif %}
 
+    </div>
+</section>
 
-		
-	
-	{% endblock content %}
-
+{% endblock content %}

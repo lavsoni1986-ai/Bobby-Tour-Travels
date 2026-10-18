@@ -1,177 +1,133 @@
-
 {% extends 'base.html' %}
 {% load static %}
 
-	{% block meta_content %}
-		{% if blog.seo_blog_title %}
-		<title>{{ blog.seo_blog_title }}</title>
-		{% else %}
-		<title>{{ blog.blog_title }}</title>
-		{% endif %}
-		
-		<meta name="description" content="{{ blog.seo_blog_description }}" />
-		<meta name="keywords" content="{{ blog.seo_blog_keywords }}" />
+{% block meta_content %}
+    {% if blog.seo_blog_title %}
+    <title>{{ blog.seo_blog_title }} - {{ this_app.app_name }}</title>
+    {% else %}
+    <title>{{ blog.blog_title }} - {{ this_app.app_name }}</title>
+    {% endif %}
 
-		<!-- Facebook and Twitter integration -->
-		<meta property="og:title" content="{{ blog.blog_title }}"/>
-		{% if blog.blog_image %}
-		<meta property="og:image" content="{{ blog.blog_image.url }}"/>
-		{% endif %}
-		<meta property="og:url" content="{% url 'blog:blog-detail' blog.blog_slug %}"/>
-		<meta property="og:site_name" content="{{ this_app.app_name }} - {{ this_app.app_title}}"/>
-		<meta property="og:description" content="{{ blog.seo_blog_description }}"/>
+    <meta name="description" content="{{ blog.seo_blog_description }}" />
+    <meta name="keywords" content="{{ blog.seo_blog_keywords }}" />
 
-		<meta name="twitter:title" content="{{ blog.blog_title }}" />
-		{% if blog.blog_image %}
-		<meta property="twitter:image" content="{{ blog.blog_image.url }}"/>
-		{% endif %}
-		<meta name="twitter:url" content="{% url 'blog:blog-detail' blog.blog_slug %}" />
-		<meta name="twitter:description" content="{{ blog.seo_blog_description }}" />
-		<meta name="twitter:card" content="summary_large_image" />
-	{% endblock meta_content %}
+    <!-- Open Graph -->
+    <meta property="og:title" content="{{ blog.blog_title }}"/>
+    {% if blog.blog_image %}
+    <meta property="og:image" content="{{ blog.blog_image.url }}"/>
+    {% endif %}
+    <meta property="og:url" content="{% url 'blog:blog-detail' blog.blog_slug %}"/>
+    <meta property="og:site_name" content="{{ this_app.app_name }}"/>
+    <meta property="og:description" content="{{ blog.seo_blog_description }}"/>
+{% endblock meta_content %}
 
+{% block content %}
 
-	{% block content %}
-	
+<!-- Header & Breadcrumb -->
+<section class="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white py-12 md:py-16 border-b border-slate-800 relative">
+    <div class="absolute inset-0 opacity-15 bg-[radial-gradient(#e11d48_1px,transparent_1px)] [background-size:20px_20px] pointer-events-none"></div>
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+        <!-- Breadcrumb -->
+        <nav class="flex items-center justify-center gap-2 text-xs text-slate-400 mb-4 font-medium">
+            <a href="{% url 'page:home' %}" class="hover:text-white transition">Home</a>
+            <i class="fas fa-chevron-right text-[10px] text-slate-600"></i>
+            <a href="{% url 'blog:all-blogs' %}" class="hover:text-white transition">Travel Blog</a>
+            <i class="fas fa-chevron-right text-[10px] text-slate-600"></i>
+            <span class="text-red-400 truncate max-w-xs">{{ blog.blog_title }}</span>
+        </nav>
 
-				<!-- Blogs Starts Here -->
-		{% if blog %}
+        <!-- Categories -->
+        <div class="flex items-center justify-center flex-wrap gap-2 mb-4">
+            {% for cat in blog.blog_category.all %}
+            <span class="px-3 py-1 rounded-full text-xs font-semibold bg-red-600/20 text-red-300 border border-red-500/30">
+                {{ cat }}
+            </span>
+            {% endfor %}
+            <span class="text-xs text-slate-400 flex items-center gap-1.5 ml-2">
+                <i class="far fa-calendar-alt text-red-500"></i> {{ blog.blog_created_at|date:"M d, Y" }}
+            </span>
+        </div>
 
-		<div id="fh5co-blog-section" class="fh5co-section-gray" style="padding-bottom:0px;">
-			<div class="container">
-				<div class="row">
-					<div class="col-md-8 col-md-offset-2 heading-section animate-box">
+        <h1 class="text-2xl md:text-4xl lg:text-5xl font-extrabold font-heading text-white tracking-tight leading-tight">
+            {{ blog.blog_title }}
+        </h1>
+    </div>
+</section>
 
-						<h3>{{ blog.blog_title }}</h3>
+<!-- Blog Content -->
+<article class="py-12 md:py-16 bg-slate-50">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Featured Image -->
+        {% if blog.blog_image %}
+        <div class="rounded-3xl overflow-hidden shadow-xl mb-10 border border-slate-200/80 bg-slate-900">
+            <img src="{{ blog.blog_image.url }}" alt="{{ blog.blog_title }}" class="w-full max-h-[500px] object-cover">
+        </div>
+        {% endif %}
 
-						{% if blog.blog_image %}
-							<img src="{{ blog.blog_image.url }}" class="img-responsive" alt="{{ blog.blog_title }}">
-							<br>
-						{% endif %}
+        <!-- Body Content Card -->
+        <div class="bg-white rounded-3xl p-6 md:p-12 shadow-sm border border-slate-200/80 space-y-6">
+            <div class="prose prose-slate max-w-none text-slate-700 leading-relaxed text-base md:text-lg space-y-4">
+                {{ blog.blog_description|safe }}
+            </div>
 
-						<div>
-							{% if blog.blog_category %}
-								{% for category in blog.blog_category.all %}
-									<button type="button" class="btn btn-primary">
-									 {{category}}  <span class="badge badge-light">4</span>
-									</button>
-								{% endfor %}
-							{% else %}
-								No Category
-							{% endif %}
-						</div>
-						<br>
+            <!-- Cab Booking Callout -->
+            <div class="mt-12 p-6 md:p-8 rounded-2xl bg-gradient-to-r from-slate-950 to-slate-900 text-white flex flex-col md:flex-row items-center justify-between gap-6">
+                <div>
+                    <h3 class="text-lg font-bold font-heading text-white mb-1">Planning a trip based on this guide?</h3>
+                    <p class="text-slate-300 text-xs md:text-sm">Book a sanitized luxury cab (Innova Crysta, Dzire, Scorpio) with 24x7 verified chauffeurs.</p>
+                </div>
+                <a href="https://wa.me/919424489377?text=Hello%20Bobby%20Tour%20and%20Travels,%20I%20read%20your%20article%20'{{ blog.blog_title|urlencode }}'%20and%20want%20to%20book%20a%20cab." target="_blank" class="shrink-0 px-5 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition flex items-center gap-2 shadow-lg whatsapp-glow">
+                    <i class="fab fa-whatsapp text-base"></i> Book This Trip
+                </a>
+            </div>
+        </div>
 
-						<p>
-							<small>Published By <strong>{{ blog.blog_added_by.first_name }}  {{ blog.blog_added_by.last_name }}</strong> on <strong>{{ blog.blog_created_at }}</strong></small>
-						</p>
+    </div>
+</article>
 
-						<div>{{ blog.blog_description|safe }}</div>
-						
-					</div>
-				</div>
-			</div>
-		</div>
+<!-- Similar Blogs Section -->
+{% if similar_blogs %}
+<section class="py-16 bg-white border-t border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between mb-8">
+            <h3 class="text-2xl font-bold font-heading text-slate-900">
+                Related Travel Articles
+            </h3>
+            <a href="{% url 'blog:all-blogs' %}" class="text-xs font-bold text-red-600 hover:text-red-700 flex items-center gap-1">
+                All Stories <i class="fas fa-arrow-right text-[10px]"></i>
+            </a>
+        </div>
 
-		{% endif %}
-		<!-- Blog Ends Here -->
-		
-		<!-- Similar Blogs Starts Here -->
-		{% if similar_blogs %}
-			<div id="fh5co-blog-section" class="fh5co-section-gray" style="padding-top:10px;">
-				<div class="container">
-					<div class="row">
-						<div class="col-md-8 col-md-offset-2 text-center heading-section animate-box">
-							<h3>Similar Blogs</h3>
-							<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Velit est facilis maiores, perspiciatis accusamus asperiores sint consequuntur debitis.</p>
-						</div>
-					</div>
-				</div>
-				<div class="container">
-					<div class="row row-bottom-padded-md">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {% for sim in similar_blogs %}
+            <article class="group bg-white rounded-3xl overflow-hidden shadow-md hover:shadow-xl transition duration-500 border border-slate-200/80 flex flex-col">
+                <div class="relative h-48 overflow-hidden bg-slate-900">
+                    {% if sim.blog_image %}
+                        <img src="{{ sim.blog_image.url }}" alt="{{ sim.blog_title }}" class="w-full h-full object-cover group-hover:scale-108 transition duration-700">
+                    {% else %}
+                        <img src="{% static 'images/hero_banner.jpg' %}" alt="{{ sim.blog_title }}" class="w-full h-full object-cover group-hover:scale-108 transition duration-700">
+                    {% endif %}
+                </div>
+                <div class="p-5 flex-1 flex flex-col justify-between">
+                    <div>
+                        <span class="text-[11px] text-slate-400 font-medium">{{ sim.blog_created_at|date:"M d, Y" }}</span>
+                        <h4 class="text-base font-bold font-heading text-slate-900 group-hover:text-red-600 transition mt-1 mb-2 line-clamp-2">
+                            <a href="{% url 'blog:blog-detail' sim.blog_slug %}">{{ sim.blog_title }}</a>
+                        </h4>
+                        <p class="text-slate-600 text-xs line-clamp-2 leading-relaxed mb-4">
+                            {{ sim.blog_description|striptags }}
+                        </p>
+                    </div>
+                    <a href="{% url 'blog:blog-detail' sim.blog_slug %}" class="text-xs font-bold text-red-600 hover:text-red-700 flex items-center gap-1">
+                        Read Story <i class="fas fa-arrow-right text-[10px]"></i>
+                    </a>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
 
-						{% for blog in similar_blogs %}
-						<div class="col-lg-4 col-md-4 col-sm-6">
-							<div class="fh5co-blog animate-box">
-
-								{% if blog.blog_image %}
-									<a href="{% url 'blog:blog-detail' blog.blog_slug %}"><img class="img-responsive" src="{{ blog.blog_image.url }}" alt="{{ blog.blog_title }}" style="height:200px; width:100%;"></a>
-								{% else %}
-									<a href="{% url 'blog:blog-detail' blog.blog_slug %}"><img class="img-responsive" src="{% static 'images/no-image.jpg' %}" alt="{{ blog.blog_title }}" style="height:200px; width:100%;"></a>
-								{% endif %}
-
-								<div class="blog-text">
-									<div class="prod-title">
-										<h3><a href="{% url 'blog:blog-detail' blog.blog_slug %}">{{ blog.blog_title }}</a></h3>
-										<span class="posted_by">{{ blog.blog_created_at }}</span>
-										<span class="comment"><a href="">21<i class="icon-bubble2"></i></a></span>
-										<div>{{ blog.blog_description|safe|slice:":100" }} ...</div>
-										<p><a href="{% url 'blog:blog-detail' blog.blog_slug %}">Read More...</a></p>
-									</div>
-								</div> 
-							</div>
-						</div>
-						{% endfor %}
-						<div class="clearfix visible-md-block"></div>
-					</div>
-
-					<div class="col-md-12 text-center animate-box">
-						<p><a class="btn btn-primary btn-outline btn-lg" href="{% url 'blog:all-blogs' %}">See All Blogs <i class="icon-arrow-right22"></i></a></p>
-					</div>
-
-				</div>
-			</div>
-			<!-- Similar Blogs Ends Here -->
-
-			<!-- Other Tours Starts Here -->
-		{% elif other_blogs %}
-			<div id="fh5co-blog-section" class="fh5co-section-gray">
-				<div class="container">
-					<div class="row">
-						<div class="col-md-8 col-md-offset-2 text-center heading-section animate-box">
-							<h3>Other Blogs</h3>
-							<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Velit est facilis maiores, perspiciatis accusamus asperiores sint consequuntur debitis.</p>
-						</div>
-					</div>
-				</div>
-				<div class="container">
-					<div class="row row-bottom-padded-md">
-
-						{% for blog in other_blogs %}
-						<div class="col-lg-4 col-md-4 col-sm-6">
-							<div class="fh5co-blog animate-box">
-
-								{% if blog.blog_image %}
-									<a href="{% url 'blog:blog-detail' blog.blog_slug %}"><img class="img-responsive" src="{{ blog.blog_image.url }}" alt=""></a>
-								{% else %}
-									<a href="{% url 'blog:blog-detail' blog.blog_slug %}"><img class="img-responsive" src="{% static 'images/place-1.jpg' %}" alt=""></a>
-								{% endif %}
-
-								<div class="blog-text">
-									<div class="prod-title">
-										<h3><a href="{% url 'blog:blog-detail' blog.blog_slug %}">{{ blog.blog_title }}</a></h3>
-										<span class="posted_by">{{ blog.blog_created_at }}</span>
-										<span class="comment"><a href="">21<i class="icon-bubble2"></i></a></span>
-										<p>{{ blog.blog_description|slice:":100" }} ...</p>
-										<p><a href="{% url 'blog:blog-detail' blog.blog_slug %}">Read More...</a></p>
-									</div>
-								</div> 
-							</div>
-						</div>
-						{% endfor %}
-						<div class="clearfix visible-md-block"></div>
-					</div>
-
-					<div class="col-md-12 text-center animate-box">
-						<p><a class="btn btn-primary btn-outline btn-lg" href="{% url 'blog:all-blogs' %}">See All Blogs <i class="icon-arrow-right22"></i></a></p>
-					</div>
-
-				</div>
-			</div>
-		{% endif %}
-		<!-- Similar Tours Ends Here -->
-
-
-	
-	{% endblock content %}
-
+{% endblock content %}

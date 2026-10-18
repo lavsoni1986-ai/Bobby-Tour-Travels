@@ -1,48 +1,164 @@
 {% load static %}
 
-	<body>
-		<div id="fh5co-wrapper">
-		<div id="fh5co-page">
+<body class="bg-slate-50 text-slate-800 antialiased font-sans">
+	<div id="fh5co-wrapper" class="overflow-x-hidden min-h-screen flex flex-col pb-16 sm:pb-0">
+	<div id="fh5co-page" class="flex-grow">
 
-		<header id="fh5co-header-section" class="sticky-banner">
-			<div class="container">
-				<div class="nav-header">
-					<a href="#" class="js-fh5co-nav-toggle fh5co-nav-toggle dark"><i></i></a>
-					{% if this_app.app_logo %}
-					<a href="{% url 'page:home' %}"><img src="{{ this_app.app_logo.url }}" alt="{{ this_app.app_name }}" class="img-logo"></a>
-					{% else %}
-					<h1 id="fh5co-logo"><a href="{% url 'page:home' %}"><i class="icon-airplane"></i>{{ this_app.app_name }}</a></h1>
-					{% endif %}
-					<!-- START #fh5co-menu-wrap -->
-					<nav id="fh5co-menu-wrap" role="navigation">
-						<ul class="sf-menu" id="fh5co-primary-menu">
-							<li class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}"><a href="{% url 'page:home' %}">Home</a></li>
-							{% for top_page in top_menu %}
-								<li class="{% if top_page.page_slug in request.path %}active{% endif %}"><a href="{% url 'page:page-detail' top_page.page_slug %}">{{ top_page.page_title }}</a></li>
-							{% endfor %}
+	<!-- Top Luxury Announcement & Quick Contact Strip -->
+	<div class="bg-slate-950 text-slate-300 py-2.5 px-4 border-b border-slate-800 text-xs sm:text-sm font-medium">
+		<div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-2">
+			<div class="flex items-center gap-3">
+				<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-red-600/20 text-red-400 border border-red-500/30">
+					<span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span> 24x7 Cabs Available
+				</span>
+				<span class="hidden sm:inline text-slate-400">
+					Shahdol &bull; Anuppur &bull; Umaria &bull; Bandhavgarh Safari &bull; Interstate
+				</span>
+			</div>
+			<div class="flex items-center gap-4 text-xs sm:text-sm">
+				<a href="tel:+919424489377" class="hover:text-white transition flex items-center gap-1.5 text-slate-300">
+					<i class="icon-phone2 text-red-500"></i>
+					<span>Helpline: <strong class="text-white">+91 9424489377</strong></span>
+				</a>
+				<span class="text-slate-700 hidden sm:inline">|</span>
+				<a href="https://maps.google.com/?q=Bobby+Tour+and+Travels+New+Bus+Stand+Shahdol+Madhya+Pradesh+484001" target="_blank" class="hover:text-red-400 transition hidden md:flex items-center gap-1.5 text-slate-300">
+					<i class="icon-map-pin text-red-500"></i>
+					<span>New Bus Stand, Shahdol</span>
+				</a>
+			</div>
+		</div>
+	</div>
 
-							<li class="{% if 'activit' in request.path %}active{% endif %}">
-								<a href="{% url 'tour:all-activities' %}" class="fh5co-sub-ddown">Activities</a>
-								<ul class="fh5co-sub-menu">
-									{% for activity in activity_menu %}
-										<li><a href="{% url 'tour:activity-detail' activity.activity_slug %}">{{ activity.activity_title }}</a></li>
-									{% endfor %}
-								</ul>
-							</li>
-							<li class="{% if 'region' in request.path %}active{% endif %}">
-								<a href="{% url 'tour:all-regions' %}" class="fh5co-sub-ddown">Regions</a>
-								<ul class="fh5co-sub-menu">
-									{% for region in region_menu %}
-										<li><a href="{% url 'tour:region-detail' region.region_slug %}">{{ region.region_title }}</a></li>
-									{% endfor %}
-								</ul>
-							</li>
-							<li class="{% if 'blog' in request.path %}active{% endif %}"><a href="{% url 'blog:all-blogs' %}">Blogs</a></li>
-							<li class="{% if 'contact' in request.path %}active{% endif %}"><a href="{% url 'page:contact' %}">Contact</a></li>
-						</ul>
-					</nav>
+	<!-- Main Modern Sticky Frosted Glass Header -->
+	<header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md shadow-sm border-b border-slate-100 transition-all duration-300">
+		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+			<div class="flex items-center justify-between py-2 sm:py-3">
+				
+				<!-- Brand Logo -->
+				<div class="flex-shrink-0 flex items-center">
+					<a href="{% url 'page:home' %}" class="flex items-center gap-3 group">
+						<img src="{% static 'images/bobby-logo.png' %}" 
+						     alt="Bobby Tour &amp; Travels" 
+						     style="height: 65px !important; max-height: 70px !important; width: auto !important; object-fit: contain !important;" 
+						     class="block py-1 transition-transform duration-300 group-hover:scale-105">
+					</a>
+				</div>
+
+				<!-- Desktop Navigation Menu -->
+				<nav class="hidden lg:flex items-center gap-1 xl:gap-2">
+					<a href="{% url 'page:home' %}" class="px-3.5 py-2 text-sm font-semibold rounded-xl transition duration-200 {% if request.resolver_match.url_name == 'home' %}text-red-600 bg-red-50/80 shadow-sm{% else %}text-slate-700 hover:text-red-600 hover:bg-slate-50{% endif %}">
+						Home
+					</a>
+
+					<!-- Destinations Dropdown Menu -->
+					<div class="relative group">
+						<a href="{% url 'tour:all-regions' %}" class="px-3.5 py-2 text-sm font-semibold text-slate-700 hover:text-red-600 hover:bg-slate-50 rounded-xl transition duration-200 inline-flex items-center gap-1.5 {% if 'region' in request.path %}text-red-600 bg-red-50/80{% endif %}">
+							<span>Destinations</span>
+							<i class="icon-arrow-down22 text-xs opacity-60 group-hover:rotate-180 transition-transform duration-200"></i>
+						</a>
+						<div class="absolute left-0 top-full pt-2 w-72 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+							<div class="bg-white rounded-2xl shadow-2xl border border-slate-100 p-2.5 space-y-1">
+								{% for region in region_menu %}
+									<a href="{% url 'tour:region-detail' region.region_slug %}" class="flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-medium text-slate-700 hover:text-red-600 hover:bg-red-50/70 transition">
+										<span class="font-semibold">{{ region.region_title }}</span>
+										<i class="icon-arrow-right22 text-xs text-slate-400"></i>
+									</a>
+								{% endfor %}
+								<div class="border-t border-slate-100 my-1"></div>
+								<a href="{% url 'tour:all-regions' %}" class="block px-4 py-2 text-xs font-bold text-red-600 hover:text-red-700 text-center">
+									View All Destinations &rarr;
+								</a>
+							</div>
+						</div>
+					</div>
+
+					<!-- Services / Activities Dropdown Menu -->
+					<div class="relative group">
+						<a href="{% url 'tour:all-activities' %}" class="px-3.5 py-2 text-sm font-semibold text-slate-700 hover:text-red-600 hover:bg-slate-50 rounded-xl transition duration-200 inline-flex items-center gap-1.5 {% if 'activit' in request.path %}text-red-600 bg-red-50/80{% endif %}">
+							<span>Services</span>
+							<i class="icon-arrow-down22 text-xs opacity-60 group-hover:rotate-180 transition-transform duration-200"></i>
+						</a>
+						<div class="absolute left-0 top-full pt-2 w-72 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+							<div class="bg-white rounded-2xl shadow-2xl border border-slate-100 p-2.5 space-y-1">
+								{% for activity in activity_menu %}
+									<a href="{% url 'tour:activity-detail' activity.activity_slug %}" class="flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-medium text-slate-700 hover:text-red-600 hover:bg-red-50/70 transition">
+										<span class="font-semibold">{{ activity.activity_title }}</span>
+										<i class="icon-arrow-right22 text-xs text-slate-400"></i>
+									</a>
+								{% endfor %}
+								<div class="border-t border-slate-100 my-1"></div>
+								<a href="{% url 'tour:all-activities' %}" class="block px-4 py-2 text-xs font-bold text-red-600 hover:text-red-700 text-center">
+									All Core Services &rarr;
+								</a>
+							</div>
+						</div>
+					</div>
+
+					<a href="{% url 'tour:all-tours' %}" class="px-3.5 py-2 text-sm font-semibold text-slate-700 hover:text-red-600 hover:bg-slate-50 rounded-xl transition duration-200 {% if 'tour' in request.path and not 'activit' in request.path and not 'region' in request.path %}text-red-600 bg-red-50/80{% endif %}">
+						Tours &amp; Cabs
+					</a>
+
+					<a href="{% url 'blog:all-blogs' %}" class="px-3.5 py-2 text-sm font-semibold text-slate-700 hover:text-red-600 hover:bg-slate-50 rounded-xl transition duration-200 {% if 'blog' in request.path %}text-red-600 bg-red-50/80{% endif %}">
+						Blogs
+					</a>
+
+					<a href="{% url 'page:contact' %}" class="px-3.5 py-2 text-sm font-semibold text-slate-700 hover:text-red-600 hover:bg-slate-50 rounded-xl transition duration-200 {% if 'contact' in request.path %}text-red-600 bg-red-50/80{% endif %}">
+						Contact
+					</a>
+				</nav>
+
+				<!-- Action Buttons (Right) -->
+				<div class="hidden sm:flex items-center gap-3">
+					<a href="tel:+919424489377" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm sm:text-base font-bold text-slate-800 bg-slate-100 hover:bg-red-50 hover:text-red-600 transition duration-200">
+						<i class="icon-phone2 text-red-600"></i>
+						<span>9424489377</span>
+					</a>
+					<a href="https://wa.me/919424489377?text=Hello%20Bobby%20Tour%20and%20Travels,%20I%20want%20to%20book%20a%20car." target="_blank" class="whatsapp-glow inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm sm:text-base font-bold text-white bg-emerald-600 hover:bg-emerald-500 shadow-md shadow-emerald-600/30 hover:shadow-lg hover:shadow-emerald-600/50 transition duration-300 transform hover:-translate-y-0.5">
+						<i class="icon-bubble text-base"></i>
+						<span>Book on WhatsApp</span>
+					</a>
+				</div>
+
+				<!-- Mobile Hamburger Button -->
+				<div class="lg:hidden flex items-center gap-2">
+					<a href="https://wa.me/919424489377?text=Hello%20Bobby%20Tour%20and%20Travels,%20I%20want%20to%20book%20a%20car." target="_blank" class="p-2.5 rounded-full bg-emerald-600 text-white shadow-md">
+						<i class="icon-bubble text-base"></i>
+					</a>
+					<button id="mobile-menu-toggle" type="button" class="p-2.5 rounded-xl text-slate-800 hover:bg-slate-100 transition focus:outline-none" aria-label="Toggle menu">
+						<i class="icon-menu text-2xl"></i>
+					</button>
 				</div>
 			</div>
-		</header>
+		</div>
 
-		<!-- end:header-top -->
+		<!-- Mobile Slide-Down Menu -->
+		<div id="mobile-menu-panel" class="hidden lg:hidden bg-white border-b border-slate-200 px-5 pt-4 pb-6 space-y-2 shadow-2xl">
+			<a href="{% url 'page:home' %}" class="block px-4 py-2.5 rounded-xl text-base font-semibold text-slate-800 hover:bg-red-50 hover:text-red-600">Home</a>
+			<a href="{% url 'tour:all-regions' %}" class="block px-4 py-2.5 rounded-xl text-base font-semibold text-slate-800 hover:bg-red-50 hover:text-red-600">Destinations (Bandhavgarh, Amarkantak, etc.)</a>
+			<a href="{% url 'tour:all-activities' %}" class="block px-4 py-2.5 rounded-xl text-base font-semibold text-slate-800 hover:bg-red-50 hover:text-red-600">Services (Car Rental, Outstation Cabs)</a>
+			<a href="{% url 'tour:all-tours' %}" class="block px-4 py-2.5 rounded-xl text-base font-semibold text-slate-800 hover:bg-red-50 hover:text-red-600">Tours &amp; Cab Packages</a>
+			<a href="{% url 'blog:all-blogs' %}" class="block px-4 py-2.5 rounded-xl text-base font-semibold text-slate-800 hover:bg-red-50 hover:text-red-600">Travel Blog</a>
+			<a href="{% url 'page:contact' %}" class="block px-4 py-2.5 rounded-xl text-base font-semibold text-slate-800 hover:bg-red-50 hover:text-red-600">Contact &amp; Location</a>
+			
+			<div class="pt-3 border-t border-slate-100 grid grid-cols-2 gap-3">
+				<a href="tel:+919424489377" class="flex items-center justify-center gap-2 py-3.5 px-3 rounded-xl font-bold text-slate-900 bg-slate-100 text-base hover:bg-slate-200">
+					<i class="icon-phone2 text-red-600"></i> Call Now
+				</a>
+				<a href="https://wa.me/919424489377?text=Hello%20Bobby%20Tour%20and%20Travels,%20I%20want%20to%20book%20a%20car." target="_blank" class="flex items-center justify-center gap-2 py-3.5 px-3 rounded-xl font-bold text-white bg-emerald-600 text-base shadow-md">
+					<i class="icon-bubble"></i> WhatsApp
+				</a>
+			</div>
+		</div>
+	</header>
+
+	<script>
+		document.addEventListener('DOMContentLoaded', function() {
+			var toggle = document.getElementById('mobile-menu-toggle');
+			var menu = document.getElementById('mobile-menu-panel');
+			if (toggle && menu) {
+				toggle.addEventListener('click', function() {
+					menu.classList.toggle('hidden');
+				});
+			}
+		});
+	</script>

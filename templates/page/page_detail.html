@@ -1,79 +1,62 @@
-
 {% extends 'base.html' %}
 {% load static %}
 
-	{% block meta_content %}
-		{% if page.seo_page_title %}
-		<title>{{ page.seo_page_title }} - {{ this_app.app_name }}</title>
-		{% else %}
-		<title>{{ page.page_title }} - {{ this_app.app_name }}</title>
-		{% endif %}
+{% block meta_content %}
+    {% if page.seo_page_title %}
+    <title>{{ page.seo_page_title }} - {{ this_app.app_name }}</title>
+    {% else %}
+    <title>{{ page.page_title }} - {{ this_app.app_name }}</title>
+    {% endif %}
 
-		<meta name="description" content="{{ page.seo_page_description }}" />
-		<meta name="keywords" content="{{ page.seo_page_keywords }}" />
+    <meta name="description" content="{{ page.seo_page_description }}" />
+    <meta name="keywords" content="{{ page.seo_page_keywords }}" />
 
-		<!-- Facebook and Twitter integration -->
-		<meta property="og:title" content="{{ page.page_title }}"/>
-		{% if page.page_image %}
-		<meta property="og:image" content="{{ page.page_image.url }}"/>
-		{% endif %}
-		<meta property="og:url" content="{% url 'page:page-detail' page.page_slug %}"/>
-		<meta property="og:site_name" content="{{ this_app.app_name }} - {{ this_app.app_title}}"/>
-		<meta property="og:description" content="{{ page.seo_page_description }}"/>
+    <!-- Open Graph -->
+    <meta property="og:title" content="{{ page.page_title }} - {{ this_app.app_name }}"/>
+    {% if page.page_image %}
+    <meta property="og:image" content="{{ page.page_image.url }}"/>
+    {% endif %}
+    <meta property="og:url" content="{% url 'page:page-detail' page.page_slug %}"/>
+    <meta property="og:site_name" content="{{ this_app.app_name }}"/>
+    <meta property="og:description" content="{{ page.seo_page_description }}"/>
+{% endblock meta_content %}
 
-		<meta name="twitter:title" content="{{ page.page_title }}" />
-		{% if page.page_image %}
-		<meta property="twitter:image" content="{{ page.page_image.url }}"/>
-		{% endif %}
-		<meta name="twitter:url" content="{% url 'page:page-detail' page.page_slug %}" />
-		<meta name="twitter:description" content="{{ page.seo_page_description }}" />
-		<meta name="twitter:card" content="summary_large_image" />
-	{% endblock meta_content %}
+{% block content %}
 
+<!-- Header Section -->
+<section class="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white py-14 md:py-18 border-b border-slate-800 relative">
+    <div class="absolute inset-0 opacity-15 bg-[radial-gradient(#e11d48_1px,transparent_1px)] [background-size:20px_20px] pointer-events-none"></div>
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+        <!-- Breadcrumb -->
+        <nav class="flex items-center justify-center gap-2 text-xs text-slate-400 mb-4 font-medium">
+            <a href="{% url 'page:home' %}" class="hover:text-white transition">Home</a>
+            <i class="fas fa-chevron-right text-[10px] text-slate-600"></i>
+            <span class="text-red-400">{{ page.page_title }}</span>
+        </nav>
 
-	{% block content %}
-	
-		<div class="fh5co-hero">
-			<div class="fh5co-overlay"></div>
+        <h1 class="text-3xl md:text-5xl font-extrabold font-heading text-white tracking-tight">
+            {{ page.page_title }}
+        </h1>
+    </div>
+</section>
 
-			{% if page.page_image %}
-				<div class="fh5co-cover" data-stellar-background-ratio="0.5" style="background-image: url({{ page.page_image.url  }});">
-			{% else %}
-				<div class="fh5co-cover" data-stellar-background-ratio="0.5" style="background-image: url({% static 'images/no-image.jpg' %});">
-			{% endif %}
-				<div class="desc">
-					<div class="container">
-						<div class="row">
-							
-							<div class="desc2 animate-box">
-								<div class="col-sm-7 col-sm-push-1 col-md-7 col-md-push-1">
-									<p>&nbsp;</p>
-									<h2>{{ page.page_title }}</h2><!-- 
-									<h3>Fly to Hong Kong via Los Angeles, USA</h3>
-									<span class="price">$599</span> -->
-									<!-- <p><a class="btn btn-primary btn-lg" href="#">Get Started</a></p> -->
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
+<!-- Content Section -->
+<section class="py-14 md:py-20 bg-slate-50">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        {% if page.page_image %}
+        <div class="rounded-3xl overflow-hidden shadow-xl mb-10 border border-slate-200/80 bg-slate-900">
+            <img src="{{ page.page_image.url }}" alt="{{ page.page_title }}" class="w-full max-h-[460px] object-cover">
+        </div>
+        {% endif %}
 
-		</div>
-		
-		<!-- Detail Starts Here -->
-			<div id="fh5co-tours" class="fh5co-section-gray">
-				<div class="container">
-					<div class="row">
-						<div class="col-md-8 col-md-offset-2 heading-section animate-box">
-							<!-- <h3>Best Regions</h3> -->
-							<div>{{ page.page_description|safe }}</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		<!-- Detail Ends Here -->
+        <div class="bg-white rounded-3xl p-6 md:p-12 shadow-sm border border-slate-200/80">
+            <div class="prose prose-slate max-w-none text-slate-700 leading-relaxed text-base md:text-lg space-y-4">
+                {{ page.page_description|safe }}
+            </div>
+        </div>
 
-	
-	{% endblock content %}
+    </div>
+</section>
 
+{% endblock content %}

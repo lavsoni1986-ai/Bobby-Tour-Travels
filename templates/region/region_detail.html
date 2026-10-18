@@ -1,176 +1,189 @@
-
 {% extends 'base.html' %}
 {% load static %}
 
-
 {% block meta_content %}
-		{% if region.seo_region_title %}
-		<title>{{ region.seo_region_title }} - {{ this_app.app_name }}</title>
-		{% else %}
-		<title>{{ region.region_title }} - {{ this_app.app_name }}</title>
-		{% endif %}
+    {% if region.seo_region_title %}
+    <title>{{ region.seo_region_title }} - {{ this_app.app_name }}</title>
+    {% else %}
+    <title>{{ region.region_title }} Travel & Cabs - {{ this_app.app_name }}</title>
+    {% endif %}
 
-		<meta name="description" content="{{ region.seo_region_description }}" />
-		<meta name="keywords" content="{{ region.seo_region_keywords }}" />
+    <meta name="description" content="{{ region.seo_region_description }}" />
+    <meta name="keywords" content="{{ region.seo_region_keywords }}" />
 
-		<!-- Facebook and Twitter integration -->
-		<meta property="og:title" content="{{ region.region_title }}"/>
-		{% if region.region_image %}
-		<meta property="og:image" content="{{ region.region_image.url }}"/>
-		{% endif %}
-		<meta property="og:url" content="{% url 'tour:region-detail' region.region_slug %}"/>
-		<meta property="og:site_name" content="{{ this_app.app_name }} - {{ this_app.app_title}}"/>
-		<meta property="og:description" content="{{ region.seo_region_description }}"/>
+    <!-- Open Graph -->
+    <meta property="og:title" content="{{ region.region_title }} - {{ this_app.app_name }}"/>
+    {% if region.region_image %}
+    <meta property="og:image" content="{{ region.region_image.url }}"/>
+    {% endif %}
+    <meta property="og:url" content="{% url 'tour:region-detail' region.region_slug %}"/>
+    <meta property="og:site_name" content="{{ this_app.app_name }}"/>
+    <meta property="og:description" content="{{ region.seo_region_description }}"/>
+{% endblock meta_content %}
 
-		<meta name="twitter:title" content="{{ region.region_title }}" />
-		{% if region.region_image %}
-		<meta property="twitter:image" content="{{ region.region_image.url }}"/>
-		{% endif %}
-		<meta name="twitter:url" content="{% url 'tour:region-detail' region.region_slug %}" />
-		<meta name="twitter:description" content="{{ region.seo_region_description }}" />
-		<meta name="twitter:card" content="summary_large_image" />
-	{% endblock meta_content %}
+{% block content %}
 
+<!-- Destination Hero Section -->
+<section class="relative bg-slate-950 text-white min-h-[380px] flex items-center overflow-hidden border-b border-slate-800">
+    <!-- Background Image with Gradient Overlay -->
+    <div class="absolute inset-0">
+        {% if region.region_image %}
+        <img src="{{ region.region_image.url }}" alt="{{ region.region_title }}" class="w-full h-full object-cover">
+        {% else %}
+        <img src="{% static 'images/hero_banner.jpg' %}" alt="{{ region.region_title }}" class="w-full h-full object-cover">
+        {% endif %}
+        <div class="absolute inset-0 bg-gradient-to-r from-slate-950/95 via-slate-950/80 to-slate-900/60"></div>
+    </div>
 
+    <!-- Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-10 w-full">
+        <nav class="flex items-center gap-2 text-xs text-slate-400 mb-4 font-medium">
+            <a href="{% url 'page:home' %}" class="hover:text-white transition">Home</a>
+            <i class="fas fa-chevron-right text-[10px] text-slate-600"></i>
+            <a href="{% url 'tour:all-regions' %}" class="hover:text-white transition">Destinations</a>
+            <i class="fas fa-chevron-right text-[10px] text-slate-600"></i>
+            <span class="text-red-400">{{ region.region_title }}</span>
+        </nav>
 
-	{% block content %}
-	
-		<div class="fh5co-hero">
-			<div class="fh5co-overlay"></div>
+        <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-red-600/30 border border-red-500/40 text-red-200 text-xs font-semibold uppercase tracking-wider mb-3">
+            <i class="fas fa-map-marker-alt text-red-400"></i> Destination Guide
+        </div>
 
-			{% if region.region_image %}
-				<div class="fh5co-cover" data-stellar-background-ratio="0.5" style="background-image: url({{ region.region_image.url }});">
-			{% else %}
-				<div class="fh5co-cover" data-stellar-background-ratio="0.5" style="background-image: url({% static 'images/cover_bg_1.jpg' %});">
-			{% endif %}
-			
-				<div class="desc">
-					<div class="container">
-						<div class="row">
-							
-							<div class="desc2 animate-box">
-								<div class="col-sm-7 col-sm-push-1 col-md-7 col-md-push-1">
-									<!-- <p>HandCrafted by <a href="http://frehtml5.co/" target="_blank" class="fh5co-site-name">FreeHTML5.co</a></p> -->
-									<h2>{{ region.region_title }}</h2>
-									<span class="price">{{ region_tour_count }} Tours</span> 
-									<!-- <p><a class="btn btn-primary btn-lg" href="#">Get Started</a></p> -->
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
+        <h1 class="text-3xl md:text-5xl font-extrabold font-heading text-white tracking-tight mb-4">
+            {{ region.region_title }}
+        </h1>
 
-		</div>
+        <div class="flex flex-wrap items-center gap-4 text-sm text-slate-300">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/10">
+                <i class="fas fa-route text-amber-400"></i> {{ region_tour_count }} Tour Package{{ region_tour_count|pluralize }}
+            </span>
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-600/30 text-emerald-300 border border-emerald-500/40">
+                <i class="fas fa-check-circle"></i> Daily Cab Service from Shahdol
+            </span>
+        </div>
+    </div>
+</section>
 
+<!-- Destination About & Tours Section -->
+<section class="py-16 bg-slate-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- About Region Card -->
+        {% if region.region_description %}
+        <div class="bg-white rounded-3xl p-6 md:p-10 shadow-sm border border-slate-200/80 mb-14">
+            <h2 class="text-xl md:text-2xl font-bold font-heading text-slate-900 mb-4 flex items-center gap-2">
+                <i class="fas fa-compass text-red-600"></i> About {{ region.region_title }}
+            </h2>
+            <div class="prose prose-slate max-w-none text-slate-700 leading-relaxed text-sm md:text-base">
+                {{ region.region_description|safe }}
+            </div>
+        </div>
+        {% endif %}
 
-		<!-- Tours by Region Starts Here -->
-		<div id="fh5co-blog-section" class="fh5co-section-gray">
-			<div class="container">
-				<div class="row">
-					<div class="col-md-8 col-md-offset-2 text-center heading-section animate-box">
-						<h3>Tours on {{ region.region_title }}</h3>
-						<div>{{ region.region_description|safe }}</div>
-					</div>
-				</div>
-			</div>
-			<div class="container">
+        <!-- Tours in this Region Header -->
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-8">
+            <div>
+                <span class="text-xs font-semibold text-red-600 uppercase tracking-wider">Packages & Rides</span>
+                <h3 class="text-2xl md:text-3xl font-extrabold font-heading text-slate-900 mt-1">
+                    Available Tours for {{ region.region_title }}
+                </h3>
+            </div>
+            <a href="https://wa.me/919424489377?text=Hello%20Bobby%20Tour%20and%20Travels,%20I%20want%20to%20book%20a%20cab%20for%20{{ region.region_title|urlencode }}." target="_blank" class="mt-4 md:mt-0 inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition shadow-sm">
+                <i class="fab fa-whatsapp text-sm"></i> Custom Inquiry on WhatsApp
+            </a>
+        </div>
 
-				{% if tours %}
-				<div class="row row-bottom-padded-md">
-					{% for tour in tours %}
-						<div class="col-lg-4 col-md-4 col-sm-6">
-							<div class="fh5co-blog animate-box">
+        {% if tours %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for tour in tours %}
+            <div class="group bg-white rounded-3xl overflow-hidden shadow-md hover:shadow-2xl transition duration-500 border border-slate-200/80 flex flex-col transform hover:-translate-y-1.5">
+                <div class="relative h-60 overflow-hidden bg-slate-900">
+                    {% if tour.tour_image %}
+                        <img src="{{ tour.tour_image.url }}" alt="{{ tour.tour_title }}" class="w-full h-full object-cover group-hover:scale-108 transition duration-700 ease-out">
+                    {% else %}
+                        <img src="{% static 'images/hero_banner.jpg' %}" alt="{{ tour.tour_title }}" class="w-full h-full object-cover opacity-80 group-hover:scale-108 transition duration-700 ease-out">
+                    {% endif %}
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-black/30"></div>
+                    {% if tour.tour_duration %}
+                    <div class="absolute bottom-4 left-4 bg-red-600/90 backdrop-blur-md text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
+                        <i class="far fa-clock mr-1"></i>{{ tour.tour_duration }} Days
+                    </div>
+                    {% endif %}
+                </div>
 
-								{% if tour.tour_image %}
-									<a href="{% url 'tour:tour-detail' tour.tour_slug %}"><img class="img-responsive" src="{{ tour.tour_image.url }}" alt="{{ tour.tour_title }}" style="height:200px; width:100%;"></a>
-								{% else %}
-									<a href="{% url 'tour:tour-detail' tour.tour_slug %}"><img class="img-responsive" src="{% static 'images/no-image.jpg' %}" alt="{{ tour.tour_title }}" style="height:200px; width:100%;"></a>
-								{% endif %}
-								<div class="blog-text">
-									<div class="prod-title">
-										<h3><a href="{% url 'tour:tour-detail' tour.tour_slug %}">{{ tour.tour_title }}</a></h3>
-											<div style="color:silver; margin-bottom:10px;">
-											{% if tour.tour_region %}
-												{% for region in tour.tour_region.all %}
-												<a href="{% url 'tour:region-detail' region.region_slug %}" style="color:silver;">{{ region }}</a>
-												{% endfor %}
-											{% endif %}
+                <div class="p-6 flex-1 flex flex-col justify-between">
+                    <div>
+                        <h4 class="text-lg font-bold font-heading text-slate-900 group-hover:text-red-600 transition mb-2">
+                            <a href="{% url 'tour:tour-detail' tour.tour_slug %}">{{ tour.tour_title }}</a>
+                        </h4>
+                        <p class="text-slate-600 text-xs line-clamp-3 leading-relaxed mb-4">
+                            {{ tour.tour_description|striptags }}
+                        </p>
+                    </div>
 
-											{% if tour.tour_duration %}
-											, {{ tour.tour_duration }} Days
-											{% endif %}
-											</div>
-										<div>{{ tour.tour_description|safe|slice:":110" }} ...</div>
-										<p><a href="{% url 'tour:tour-detail' tour.tour_slug %}">Explore Now</a></p>
-									</div>
-								</div> 
-							</div>
-						</div>
-					{% endfor %}
+                    <div class="pt-4 border-t border-slate-100 flex items-center justify-between gap-3">
+                        <a href="https://wa.me/919424489377?text=Hello%20Bobby%20Tour%20and%20Travels,%20I%20want%20to%20book%20{{ tour.tour_title|urlencode }}." target="_blank" class="flex-1 py-2.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-center text-xs font-bold transition flex items-center justify-center gap-1.5">
+                            <i class="fab fa-whatsapp"></i> Book
+                        </a>
+                        <a href="{% url 'tour:tour-detail' tour.tour_slug %}" class="flex-1 py-2.5 px-3 bg-slate-900 hover:bg-red-600 text-white rounded-xl text-center text-xs font-bold transition flex items-center justify-center gap-1">
+                            Details <i class="fas fa-arrow-right text-[10px]"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="bg-white rounded-3xl p-8 border border-slate-200 text-center shadow-sm">
+            <i class="fas fa-car text-4xl text-slate-300 mb-3"></i>
+            <h4 class="text-base font-bold text-slate-800">Custom Cabs Available on Request</h4>
+            <p class="text-xs text-slate-500 mt-1 max-w-md mx-auto">
+                No scheduled tours are listed for this destination yet, but our luxury cabs (Innova, Dzire, Ertiga) travel here on demand 24x7!
+            </p>
+            <div class="mt-4">
+                <a href="tel:+919424489377" class="inline-flex items-center gap-2 px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold transition shadow-sm">
+                    <i class="fas fa-phone-alt"></i> Call +91 94244 89377
+                </a>
+            </div>
+        </div>
+        {% endif %}
 
-					
-					
-					<div class="clearfix visible-md-block"></div>
-				</div>
+    </div>
+</section>
 
-				<div class="col-md-12 text-center animate-box">
-					<p><a class="btn btn-primary btn-outline btn-lg" href="{% url 'tour:all-tours' %}">See All Tours <i class="icon-arrow-right22"></i></a></p>
-				</div>
+<!-- Other Regions Section -->
+{% if regions %}
+<section class="py-16 bg-white border-t border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between mb-8">
+            <h3 class="text-2xl font-bold font-heading text-slate-900">
+                Other Popular Destinations
+            </h3>
+            <a href="{% url 'tour:all-regions' %}" class="text-xs font-bold text-red-600 hover:text-red-700 flex items-center gap-1">
+                All Destinations <i class="fas fa-arrow-right text-[10px]"></i>
+            </a>
+        </div>
 
-				{% else %}
-						<div class="alert alert-danger" role="alert">
-						  There are no tours on {{ region.region_title }} for now. Please visit later.
-						</div>
-				{% endif %}
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {% for r in regions %}
+            <div class="group relative rounded-3xl overflow-hidden shadow-md hover:shadow-xl transition duration-500 h-64 bg-slate-900">
+                {% if r.region_image %}
+                <img src="{{ r.region_image.url }}" alt="{{ r.region_title }}" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                {% else %}
+                <img src="{% static 'images/hero_banner.jpg' %}" alt="{{ r.region_title }}" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                {% endif %}
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+                <div class="absolute bottom-5 left-5 right-5">
+                    <h4 class="text-lg font-bold font-heading text-white">{{ r.region_title }}</h4>
+                    <a href="{% url 'tour:region-detail' r.region_slug %}" class="inline-flex items-center gap-1 text-xs font-bold text-red-400 hover:text-red-300 mt-2">
+                        View Details <i class="fas fa-arrow-right text-[10px]"></i>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
 
-			</div>
-		</div>
-		<!--Tours by Region Ends Here -->
-
-
-		<!-- Similar Regions Starts Here -->
-		{% if regions %}
-			<div id="fh5co-tours" class="fh5co-section-gray" style="padding-top:0px;">
-				<div class="container">
-					<div class="row">
-						<div class="col-md-8 col-md-offset-2 text-center heading-section animate-box">
-							<h3>Other Regions</h3>
-							<p>Best Regions to find adventure activities like Trekking, Mountain Climbing, Rafting, Canyoning and Many More.</p>
-						</div>
-					</div>
-					<div class="row">
-
-						{% for region in regions %}
-							<div class="col-md-4 col-sm-6 fh5co-tours animate-box" data-animate-effect="fadeIn">
-								<div href="#">
-									{% if region.region_image %}
-									<img src="{{ region.region_image.url }}" alt="{{ region.region_title }}" class="img-responsive" style="height:320px; width:100%;">
-									{% else %}
-									<img src="{% static 'images/no-image.jpg' %}" alt="Travel Nepal" class="img-responsive" style="height:320px; width:100%;">
-									{% endif %}
-
-									<div class="desc">
-										<span></span>
-										<h3>{{ region.region_title }}</h3><br>
-										{% comment %} <span>3 nights + Flight 5*Hotel</span>
-										<span class="price">$1,000</span> {% endcomment %}
-										<a class="btn btn-primary btn-outline" href="{% url 'tour:region-detail' region.region_slug %}">Explore Tours <i class="icon-arrow-right22"></i></a>
-									</div>
-								</div>
-							</div>
-						{% endfor %}
-
-						<div class="col-md-12 text-center animate-box">
-							<p><a class="btn btn-primary btn-outline btn-lg" href="{% url 'tour:all-regions' %}">See All Regions <i class="icon-arrow-right22"></i></a></p>
-						</div>
-					</div>
-				</div>
-			</div>
-		{% endif %}
-		<!-- Similar Regions Ends Here -->
-
-
-	
-	{% endblock content %}
-
+{% endblock content %}
